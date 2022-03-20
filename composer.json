@@ -1,11 +1,13 @@
 {
-    "name": "rappasoft/laravel-boilerplate",
+    "name": "julians22/skripsi",
+    "description": "The college project. forked from rappasoft boilerplate",
     "type": "project",
-    "description": "The Laravel Boilerplate Project.",
     "keywords": [
         "framework",
         "laravel",
-        "boilerplate"
+        "boilerplate",
+        "skripsi",
+        "julians22"
     ],
     "license": "MIT",
     "require": {

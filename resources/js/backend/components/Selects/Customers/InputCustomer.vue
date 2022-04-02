@@ -10,7 +10,7 @@
             <input type="text" v-bind:readonly="customer!=null" name="phone" class="form-control" placeholder="Phone" v-model="phone">
         </div>
         <div class="col-md-3">
-            <textarea name="address" cols="30" rows="1" v-bind:readonly="customer!=null" class="form-control" v-model="address"></textarea>
+            <textarea name="address" cols="30" rows="1" v-bind:readonly="customer!=null" class="form-control" placeholder="Address" v-model="address"></textarea>
         </div>
     </div>
 </template>

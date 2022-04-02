@@ -1,8 +1,8 @@
 <div class="c-sidebar c-sidebar-dark c-sidebar-fixed c-sidebar-lg-show" id="sidebar">
     <div class="c-sidebar-brand d-lg-down-none">
-        <svg class="c-sidebar-brand-full" width="118" height="46" alt="CoreUI Logo">
-            <use xlink:href="{{ asset('img/brand/coreui.svg#full') }}"></use>
-        </svg>
+        <div class="c-sidebar-brand d-lg-down-none">
+            <img src="{{ asset('img/brand/logo.jpeg') }}" alt="Arpan Electric" width="166" height="89">
+        </div>
         <svg class="c-sidebar-brand-minimized" width="46" height="46" alt="CoreUI Logo">
             <use xlink:href="{{ asset('img/brand/coreui.svg#signet') }}"></use>
         </svg>
@@ -76,6 +76,70 @@
                                 class="c-sidebar-nav-link"
                                 :active="activeClass(Route::is('admin.product.create'), 'c-active')"
                                 :text="__('New Product')" />
+                        </li>
+                        <li class="c-sidebar-nav-item">
+                            <x-utils.link
+                                :href="route('admin.category.index')"
+                                class="c-sidebar-nav-link"
+                                :active="activeClass(Route::is('admin.category.index'), 'c-active')"
+                                :text="__('All Product Categories')" />
+                        </li>
+                        <li class="c-sidebar-nav-item">
+                            <x-utils.link
+                                :href="route('admin.category.create')"
+                                class="c-sidebar-nav-link"
+                                :active="activeClass(Route::is('admin.category.create'), 'c-active')"
+                                :text="__('New Product Category')" />
+                        </li>
+                    </ul>
+            </li>
+
+            {{-- customer menu --}}
+            <li class="c-sidebar-nav-dropdown {{ activeClass(Route::is('admin.customer.*'), 'c-open c-show') }}">
+                <x-utils.link
+                    href="#"
+                    icon="c-sidebar-nav-icon cil-layers"
+                    class="c-sidebar-nav-dropdown-toggle"
+                    :text="__('Customer')" />
+                    <ul class="c-sidebar-nav-dropdown-items">
+                        <li class="c-sidebar-nav-item">
+                            <x-utils.link
+                                :href="route('admin.customer.index')"
+                                class="c-sidebar-nav-link"
+                                :active="activeClass(Route::is('admin.customer.index'), 'c-active')"
+                                :text="__('All Customers')" />
+                        </li>
+                        <li class="c-sidebar-nav-item">
+                            <x-utils.link
+                                :href="route('admin.customer.create')"
+                                class="c-sidebar-nav-link"
+                                :active="activeClass(Route::is('admin.customer.create'), 'c-active')"
+                                :text="__('New Customer')" />
+                        </li>
+                    </ul>
+            </li>
+
+            {{-- supplier menu --}}
+            <li class="c-sidebar-nav-dropdown {{ activeClass(Route::is('admin.supplier.*'), 'c-open c-show') }}">
+                <x-utils.link
+                    href="#"
+                    icon="c-sidebar-nav-icon cil-layers"
+                    class="c-sidebar-nav-dropdown-toggle"
+                    :text="__('Supplier')" />
+                    <ul class="c-sidebar-nav-dropdown-items">
+                        <li class="c-sidebar-nav-item">
+                            <x-utils.link
+                                :href="route('admin.supplier.index')"
+                                class="c-sidebar-nav-link"
+                                :active="activeClass(Route::is('admin.supplier.index'), 'c-active')"
+                                :text="__('All Suppliers')" />
+                        </li>
+                        <li class="c-sidebar-nav-item">
+                            <x-utils.link
+                                :href="route('admin.supplier.create')"
+                                class="c-sidebar-nav-link"
+                                :active="activeClass(Route::is('admin.supplier.create'), 'c-active')"
+                                :text="__('New Supplier')" />
                         </li>
                     </ul>
             </li>

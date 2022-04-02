@@ -41,14 +41,14 @@ class ProductController extends Controller
     {
         $request->validate([
             'product_name' => 'required',
-            'product_category_id' => 'sometimes',
+            'selected_category' => 'sometimes',
             'product_price' => 'integer',
             'product_stock' => 'integer',
             'product_description' => 'sometimes',
         ]);
         $product = Product::create([
             'name' => $request->product_name,
-            'category_id' => $request->product_category,
+            'category_id' => $request->selected_category,
             'price' => $request->product_price,
             'quantity' => $request->product_stock,
             'description' => $request->product_description,

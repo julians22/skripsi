@@ -101,7 +101,10 @@
         "optimize-autoloader": true,
         "preferred-install": "dist",
         "sort-packages": true,
-        "disable-tls": true
+        "disable-tls": true,
+        "allow-plugins": {
+            "treeware/plant": true
+        }
     },
     "minimum-stability": "dev",
     "prefer-stable": true

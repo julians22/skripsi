@@ -1,50 +1,48 @@
 @extends('backend.layouts.app')
 
-@section('title', __('All Transactions'))
+@section('title', 'All Suppliers')
 
 @section('content')
     <x-backend.card>
-        <x-slot name="header">
-            @lang('All Transactions')
-        </x-slot>
+        @slot('header')
+            @lang('All Suppliers')
+        @endslot
 
-        <x-slot name="headerActions">
+        @slot('headerActions')
             <x-utils.link
                 icon="c-icon cil-plus"
                 class="card-header-action"
-                :href="route('admin.transaction.create')"
-                :text="__('Add Transaction')"
+                :href="route('admin.supplier.create')"
+                :text="__('Add Supplier')"
             />
-        </x-slot>
+        @endslot
 
         @slot('body')
             <div class="row">
                 <div class="col-md-12">
-                    <table class="table table-bordered table-hover table-strip">
+                    <table class="table table-sm table-bordered table-hover table-strip">
                         <thead>
                             <tr>
-                                <td>Invoice Number</td>
-                                <td>Customer</td>
-                                <td>Total Price</td>
+                                <td>Name</td>
+                                <td>Phone</td>
                                 <td>Created Date</td>
                                 <td>Action</td>
                             </tr>
                         </thead>
-
                         <tbody>
-                            @if ($transactions->count() > 0)
-                                @foreach ($transactions as $transaction)
+                            @if ($suppliers->count() > 0)
+                                @foreach ($suppliers as $supplier)
                                     <tr>
-                                        <td>{{ $transaction->invoice_number }}</td>
-                                        <td>{{ $transaction->customer->name }}</td>
-                                        <td>{{ $transaction->total }}</td>
-                                        <td>{{ $transaction->created_at }}</td>
+                                        <td>{{ $supplier->name }}</td>
+                                        <td>{{ $supplier->phone }}</td>
+                                        <td>{{ $supplier->created_at }}</td>
+                                        <td></td>
                                     </tr>
                                 @endforeach
                             @else
                                 <tr>
                                     <td colspan="6" class="text-center">
-                                        <strong>@lang('No Transaction Found')</strong>
+                                        <strong>@lang('No Supplier Found')</strong>
                                     </td>
                                 </tr>
                             @endif
@@ -55,4 +53,3 @@
         @endslot
     </x-backend.card>
 @endsection
-

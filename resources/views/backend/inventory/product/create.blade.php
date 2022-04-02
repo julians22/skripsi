@@ -30,20 +30,8 @@
                     <input type="text" name="product_code" id="product_code" class="form-control" placeholder="Product Code">
                 </div>
             </div>
-            <div class="form-group row">
-                <label for="product_category" class="col-form-label col-md-2">Product Category</label>
-                <div class="col-md-10">
-                    <select name="product_category" id="product_category" class="form-control" required>
-                        <option value="">Select Product Category</option>
-                        @if ($categories->count())
-                            @foreach ($categories as $category)
-                                <option value="{{ $category->id }}">{{ $category->name }}</option>
-                            @endforeach
-                        @else
-                            <option disabled value="">No Product Category</option>
-                        @endif
-                    </select>
-                </div>
+            <div>
+                <select-category create_route="{{ route('admin.category.create') }}" :categories_model='@json($categories)'></select-category>
             </div>
             <div class="form-group row">
                 <label for="product_description" class="col-form-label col-md-2">Product Description</label>

@@ -18,7 +18,8 @@ import Vue from 'vue';
 import vSelect from 'vue-select'
 
 Vue.component('v-select', vSelect)
-Vue.component('select-customer', require('./components/Selects/SelectCustomer.vue').default);
+Vue.component('select-customer', require('./components/Selects/Customers/SelectCustomer.vue').default);
+Vue.component('select-category', require('./components/Selects/Categories/SelectCategories.vue').default);
 
 const app = new Vue({
     el: '#app',

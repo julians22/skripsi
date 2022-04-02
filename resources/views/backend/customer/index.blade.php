@@ -1,47 +1,48 @@
 @extends('backend.layouts.app')
 
-@section('title', __('All Product Categories'))
+@section('title', __('All Customers'))
 
 @section('content')
 <x-backend.card>
     <x-slot name="header">
-        @lang('All Product Categories')
+        @lang('All Customers')
     </x-slot>
 
     <x-slot name="headerActions">
         <x-utils.link
             icon="c-icon cil-plus"
             class="card-header-action"
-            :href="route('admin.category.create')"
-            :text="__('Create Product Category')"
+            :href="route('admin.customer.create')"
+            :text="__('Add Customer')"
         />
     </x-slot>
 
-    @slot('body')
+    <x-slot name="body">
         <div class="row">
             <div class="col-md-12">
-                <table class="table table-sm table-bordered table-hover table-striped">
+                <table class="table table-sm table-bordered table-hover table-strip">
                     <thead>
                         <tr>
                             <td>Name</td>
-                            <td>Description</td>
+                            <td>Phone</td>
+                            <td>Created Date</td>
                             <td>Action</td>
                         </tr>
                     </thead>
-
                     <tbody>
-                        @if ($categories->count() > 0)
-                            @foreach ($categories as $category)
+                        @if ($customers->count() > 0)
+                            @foreach ($customers as $customer)
                                 <tr>
-                                    <td>{{ $category->name }}</td>
-                                    <td>{{ Str::limit($category->description, 200, '...') }}</td>
+                                    <td>{{ $customer->name }}</td>
+                                    <td>{{ $customer->phone }}</td>
+                                    <td>{{ $customer->created_at }}</td>
                                     <td></td>
                                 </tr>
                             @endforeach
                         @else
                             <tr>
                                 <td colspan="6" class="text-center">
-                                    <strong>@lang('No Category Found')</strong>
+                                    <strong>@lang('No Customer Found')</strong>
                                 </td>
                             </tr>
                         @endif
@@ -49,7 +50,6 @@
                 </table>
             </div>
         </div>
-    @endslot
+    </x-slot>
 </x-backend.card>
 @endsection
-

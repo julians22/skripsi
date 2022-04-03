@@ -1,16 +1,16 @@
 <template>
     <div class="form-row">
         <div class="col-md-3">
-            <input type="text" v-bind:readonly="customer!=null" name="name" class="form-control" placeholder="First name" v-model="name">
+            <input type="text" v-bind:readonly="customer!=null" name="name" class="form-control" placeholder="Name for customer" v-model="name">
         </div>
         <div class="col-md-3">
-            <input type="email" v-bind:readonly="customer!=null" name="email" class="form-control" placeholder="Email" v-model="email">
+            <input type="email" v-bind:readonly="customer!=null" name="email" class="form-control" placeholder="Email for customer" v-model="email">
         </div>
         <div class="col-md-3">
-            <input type="text" v-bind:readonly="customer!=null" name="phone" class="form-control" placeholder="Phone" v-model="phone">
+            <input type="text" v-bind:readonly="customer!=null" name="phone" class="form-control" placeholder="Phone for customer" v-model="phone">
         </div>
         <div class="col-md-3">
-            <textarea name="address" cols="30" rows="1" v-bind:readonly="customer!=null" class="form-control" placeholder="Address" v-model="address"></textarea>
+            <input type="text" v-bind:readonly="customer!=null" name="address" class="form-control" placeholder="Address for customer" v-model="address">
         </div>
     </div>
 </template>

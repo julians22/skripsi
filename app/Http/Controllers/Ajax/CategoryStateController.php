@@ -8,7 +8,6 @@ use Illuminate\Http\Request;
 
 class CategoryStateController extends Controller
 {
-
     public function getCategories(Request $request)
     {
         $search = $request->get('search');

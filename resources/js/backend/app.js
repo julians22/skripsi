@@ -18,6 +18,9 @@ import Vue from 'vue';
 import vSelect from 'vue-select'
 
 Vue.component('v-select', vSelect)
+
+Vue.component('transaction-out', require('./components/Forms/Transactions/Out.vue').default);
+
 Vue.component('select-customer', require('./components/Selects/Customers/SelectCustomer.vue').default);
 Vue.component('select-category', require('./components/Selects/Categories/SelectCategories.vue').default);
 

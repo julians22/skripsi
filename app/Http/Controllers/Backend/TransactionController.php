@@ -28,9 +28,9 @@ class TransactionController extends Controller
      */
     public function create()
     {
-        $products = Product::all();
-        $customers = Customer::all();
-        return view('backend.transaction.create', compact('products'));
+        $products = Product::limit(10)->get();
+        $customers = Customer::limit(10)->get();
+        return view('backend.transaction.create', compact('products', 'customers'));
     }
 
     /**

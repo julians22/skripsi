@@ -19,7 +19,11 @@
         @endslot
 
         @slot('body')
-            <select-customer :customer_model="@json($customers ?? [])"></select-customer>
+            <transaction-out :products_model='@json($products ?? [])'>
+                <template v-slot:select_customer>
+                    <select-customer :customers_model='@json($customers ?? [])'></select-customer>
+                </template>
+            </transaction-out>
         @endslot
 
         @slot('footer')

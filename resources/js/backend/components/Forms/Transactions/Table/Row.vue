@@ -2,7 +2,7 @@
     <tr>
         <td>{{ add_product.name }}</td>
         <td>
-            @<input type="number" v-model="amount" class="form-control form-control-sm" />
+            @<input type="number" v-model="add_product.amount" class="form-control form-control-sm" />
         </td>
         <td>
             {{ add_product.price }}
@@ -19,19 +19,20 @@
 <script>
 export default {
     props: {
-        add_product:{
-            type: Object
-        },
-        add_amount: {
-            type: Number,
-            default: 1,
-        },
+        add_product: {
+            type: Object,
+            deep: true,
+
+        }
     },
     data() {
         return {
             total: 0,
             amount: 0,
         }
+    },
+    created() {
+        this.total = this.amount * this.add_product.price
     },
     watch: {
         amount: function(new_amount) {
@@ -48,9 +49,6 @@ export default {
                 alert('Amount must be greater than 0');
             }
         }
-    },
-    created() {
-        this.amount = this.add_product.amount;
     },
     methods: {
         removeProduct: function() {

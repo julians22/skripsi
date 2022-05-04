@@ -49,7 +49,7 @@
                             </tr>
                         </thead>
                         <tbody v-if="added_products">
-                            <table-row v-for="add_product in added_products" :key="add_product.id" :add_product="add_product" :add_amount="add_product.amount"/>
+                            <table-row v-for="add_product in added_products" :key="`row-${add_product.id}`" :add_product="add_product"  />
                         </tbody>
                         <tbody v-else>
                             <tr>
@@ -91,10 +91,11 @@ export default {
                 if (this.added_products.length > 0) {
                     let found = false;
                     for (let i = 0; i < this.added_products.length; i++) {
-                        if (this.added_products[i].id == this.selected_product.id) {
+                        if (this.added_products[i].id === this.selected_product.id) {
                             found = true;
-                            this.added_products[i].amount = parseInt(this.added_products[i].amount) + parseInt(this.amount);
-                            break;
+                            let amount = parseInt(this.added_products[i].amount) + parseInt(this.amount);
+                            this.added_products[i].amount = amount;
+                            return;
                         }
                     }
                     if (!found) {

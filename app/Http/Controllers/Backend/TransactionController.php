@@ -2,11 +2,17 @@
 
 namespace App\Http\Controllers\Backend;
 
+use App\Exceptions\GeneralException;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Backend\Transactions\Out\StoreTransactionRequest;
 use App\Models\Customer;
 use App\Models\Product;
 use App\Models\Transaction;
+use Barryvdh\DomPDF\Facade\Pdf;
+use DB;
+use Exception;
 use Illuminate\Http\Request;
+use Ramsey\Uuid\Uuid;
 
 class TransactionController extends Controller
 {
@@ -39,9 +45,35 @@ class TransactionController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreTransactionRequest $request)
     {
-        dd($request->all());
+        DB::beginTransaction();
+
+        try {
+            $transaction = Transaction::create([
+                'invoice_number' => 'INV-' . time(),
+                'customer_id' => $request->selected_customer,
+                'total' => $request->total,
+            ]);
+
+            foreach ($request->products as $product) {
+                $transaction->details()->create([
+                    'product_id' => $product['product_id'],
+                    'quantity' => $product['quantity'],
+                    'unit_price' => $product['price'],
+                ]);
+
+                $product_model = Product::find($product['product_id']);
+                $product_model->update([
+                    'quantity' => $product_model->quantity - $product['quantity'],
+                ]);
+            }
+        } catch (Exception $e) {
+            DB::rollBack();
+            throw new GeneralException(__('There was a problem creating your transaction.'.$e));
+        }
+        DB::commit();
+        return redirect()->route('admin.transaction.index')->withFlashSuccess(__('Transaction successfully created.'));
     }
 
     /**
@@ -52,7 +84,8 @@ class TransactionController extends Controller
      */
     public function show(Transaction $transaction)
     {
-        //
+        $transaction->with('customer', 'details');
+        return view('backend.transaction.show', compact('transaction'));
     }
 
     /**
@@ -87,5 +120,13 @@ class TransactionController extends Controller
     public function destroy(Transaction $transaction)
     {
         //
+    }
+
+    public function print(Transaction $transaction)
+    {
+        $transaction->with('customer', 'details');
+        // return view('backend.utils.print.transactions.out', compact('transaction'));
+        $pdf = Pdf::loadView('backend.utils.print.transactions.out', compact('transaction'));
+        return $pdf->stream('invoice.pdf');
     }
 }

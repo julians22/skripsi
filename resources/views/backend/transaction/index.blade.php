@@ -20,14 +20,14 @@
         @slot('body')
             <div class="row">
                 <div class="col-md-12">
-                    <table class="table table-bordered table-hover table-strip">
+                    <table class="table table-bordered table-hover table-strip table-sm">
                         <thead>
                             <tr>
-                                <td>Invoice Number</td>
-                                <td>Customer</td>
-                                <td>Total Price</td>
-                                <td>Created Date</td>
-                                <td>Action</td>
+                                <td>@lang('Invoice Number')</td>
+                                <td>@lang('Customer')</td>
+                                <td>@lang('Total Price')</td>
+                                <td>@lang('Created Date')</td>
+                                <td>@lang('Action')</td>
                             </tr>
                         </thead>
 
@@ -38,7 +38,11 @@
                                         <td>{{ $transaction->invoice_number }}</td>
                                         <td>{{ $transaction->customer->name }}</td>
                                         <td>{{ $transaction->total }}</td>
-                                        <td>{{ $transaction->created_at }}</td>
+                                        <td>@displayDate($transaction->created_at, 'Y-M-d')</td>
+                                        <td>
+                                            <a href="#"><i class="fas fa-print"></i></a>
+                                            <a href="{{ route('admin.transaction.show', $transaction) }}"><i class="fas fa-eye"></i></a>
+                                        </td>
                                     </tr>
                                 @endforeach
                             @else

@@ -23,7 +23,7 @@ class Transaction extends Model
      */
     public function details(): HasMany
     {
-        return $this->hasMany(TransactionDetails::class, 'transaction_id', 'id');
+        return $this->hasMany(TransactionDetail::class, 'transaction_id', 'id');
     }
 
     /**
@@ -33,6 +33,6 @@ class Transaction extends Model
      */
     public function customer(): HasOne
     {
-        return $this->hasOne(Customer::class);
+        return $this->hasOne(Customer::class, 'id', 'customer_id');
     }
 }

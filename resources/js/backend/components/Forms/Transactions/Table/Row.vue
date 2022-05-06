@@ -1,41 +1,26 @@
 <template>
-    <tr>
-        <td>{{ add_product.name }}</td>
-        <td>
-            @<input type="number" v-model="add_product.amount" class="form-control form-control-sm" />
-        </td>
-        <td>
-            {{ add_product.price }}
-        </td>
-        <td>{{ total }}</td>
-        <td>
-            <button @click="removeProduct()" type="button" class="btn btn-sm btn-danger">
-                <i class="fa fa-trash"></i>
-            </button>
-        </td>
-    </tr>
+
 </template>
 
 <script>
 export default {
     props: {
-        add_product: {
-            type: Object,
-            deep: true,
-
+        added_products: {
+            type: Array,
         }
     },
     data() {
         return {
+            amount: this.add_product.amount,
             total: 0,
-            amount: 0,
         }
     },
-    created() {
-        this.total = this.amount * this.add_product.price
+    mounted() {
+        this.amount = this.add_product.amount;
+        this.total = this.add_product.amount * this.add_product.price;
     },
     watch: {
-        amount: function(new_amount) {
+        amount(new_amount) {
             if (new_amount > 0) {
                 if(new_amount > this.add_product.quantity){
                     this.amount = this.add_product.quantity;
@@ -48,7 +33,7 @@ export default {
                 this.total = 0;
                 alert('Amount must be greater than 0');
             }
-        }
+        },
     },
     methods: {
         removeProduct: function() {

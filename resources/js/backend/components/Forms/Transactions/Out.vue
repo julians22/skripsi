@@ -1,9 +1,7 @@
 <template>
     <div>
-        <slot name="select_customer"></slot>
-
-        <div class="row mt-4">
-            <div class="col-md-6">
+        <div class="row">
+            <div class="col-md-5">
                 <div class="card">
                     <div class="card-body">
                         <div class="form-group">
@@ -21,7 +19,7 @@
                                 <label for="amount">Amount</label>
                                 <div class="row">
                                     <div class="col-10">
-                                        <input type="number" class="form-control" id="amount" placeholder="Quantity" v-model="amount">
+                                        <input type="number" class="form-control form-control-sm" id="amount" placeholder="Quantity" v-model="amount">
                                     </div>
                                     <div class="col-2">
                                         / <span v-text="selected_product.quantity"></span>
@@ -35,28 +33,104 @@
                     </div>
                 </div>
             </div>
+            <div class="col-md-7">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <slot name="select_customer"></slot>
+                            </div>
+                        </div>
+                        <div class="row mt-4">
+                            <div class="col-md-12">
+                                <div class="table-responsive">
+                                    <table class="table table-sm table-bordered" align="center">
+                                        <thead class="bg-dark">
+                                            <tr>
+                                                <th></th>
+                                                <th>Product</th>
+                                                <th>@</th>
+                                                <th>Price</th>
+                                                <th>Total</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody v-if="added_products.length > 0">
+                                            <tr v-for="(add_product, index) in added_products" :key="`row-${add_product.id}`">
+                                                <td>
+                                                    <button @click="removeProduct(index)" type="button" class="btn btn-sm btn-danger">
+                                                        <i class="fa fa-trash"></i>
+                                                    </button>
+                                                </td>
+                                                <td  width="100%">
+                                                    {{ add_product.name }}
+                                                    <input type="hidden" :name="`products[${index}][product_id]`" :value=" add_product.id">
+                                                </td>
+                                                <td>
+                                                    {{ add_product.amount }}
+                                                    <input type="hidden" :name="`products[${index}][quantity]`" :value=" add_product.amount">
+                                                </td>
+                                                <td>
+                                                    <input type="hidden" :name="`products[${index}][price]`" :value=" add_product.price">
+                                                    {{ add_product.price }}
+                                                </td>
+                                                <td>
+                                                    {{ total(add_product.total) }}
+                                                </td>
+                                            </tr>
+                                            <tr class="bg-dark">
+                                                <th colspan="4">Subtotal</th>
+                                                <td>
+                                                    <input type="hidden" name="total" :value="subtotal">
+                                                    <span v-text="subtotal">
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                        <tbody v-else>
+                                            <tr>
+                                                <td colspan="5">No products added, select product first</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
 
-            <div class="col-md-6">
-                <div class="table-responsive">
-                    <table class="table table-sm table-strip table-hover table-bordered" align="center">
-                        <thead>
-                            <tr>
-                                <th>Product</th>
-                                <th>Amount</th>
-                                <th>Price</th>
-                                <th>Total</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody v-if="added_products">
-                            <table-row v-for="add_product in added_products" :key="`row-${add_product.id}`" :add_product="add_product"  />
-                        </tbody>
-                        <tbody v-else>
-                            <tr>
-                                <td colspan="4">No products added, select product first</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                            </div>
+                        </div>
+
+                        <div class="row mt-4">
+                            <div class="col-md-12">
+
+                                <div class="form-group" v-if="subtotal > 0">
+                                    <label for="discounts">Discount</label>
+                                    <div class="row">
+                                        <div class="col-md-5">
+                                            <div class="input-group input-group-sm">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text" id="inputGroup-sizing-sm">%</span>
+                                                </div>
+                                                <input v-model="discount.percentage" type="number" :disabled="setting.percentage == 1" class="form-control" name="dicounts['percent']">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2 text-center p-0">
+                                            <button class="btn btn-sm btn-light" type="button" @click="setting.percentage = !setting.percentage"><i class="fas fa-exchange-alt"></i></button>
+                                        </div>
+                                        <div class="col-md-5">
+                                            <div class="input-group input-group-sm">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text" id="inputGroup-sizing-sm">Rp</span>
+                                                </div>
+                                                <input v-model="discount.price" type="number" :disabled="setting.percentage == 0" class="form-control" name="dicounts['price']">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <span v-text="grand_total"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
                 </div>
             </div>
         </div>
@@ -69,7 +143,10 @@ export default {
     props: {
         products_model: {
             type: Array,
-        }
+        },
+        old_selected_products: {
+            type: Array,
+        },
     },
     data() {
         return {
@@ -77,6 +154,38 @@ export default {
             selected_product: null,
             added_products: [],
             amount: 1,
+            // grand_total: 0,
+            subtotal: 0,
+            discount: {
+                percentage: 0,
+                price: 0,
+            },
+            setting:{
+                percentage: false,
+            }
+        }
+    },
+    watch: {
+        subtotal() {
+            this.applydiscount()
+        },
+        'discount.percentage': function(val) {
+            this.applydiscount()
+        },
+        'discount.price': function(val) {
+            this.applydiscount()
+        },
+    },
+    computed: {
+        grand_total(){
+            return this.subtotal - this.discount.price
+        }
+    },
+    mounted() {
+        if (this.old_selected_products) {
+            array.forEach(element => {
+
+            });
         }
     },
     components: {
@@ -87,30 +196,36 @@ export default {
     },
     methods: {
         addSelectedProduct: function() {
+            let data_added_products = this.added_products;
+            this.selected_product.total = Number(this.amount) * Number(this.selected_product.price);
             if(this.selected_product && this.amount) {
-                if (this.added_products.length > 0) {
+                if (data_added_products.length > 0) {
                     let found = false;
-                    for (let i = 0; i < this.added_products.length; i++) {
-                        if (this.added_products[i].id === this.selected_product.id) {
+                    for (let i = 0; i < data_added_products.length; i++) {
+                        if (data_added_products[i].id === this.selected_product.id) {
                             found = true;
-                            let amount = parseInt(this.added_products[i].amount) + parseInt(this.amount);
-                            this.added_products[i].amount = amount;
-                            return;
+                            let amount = Number(data_added_products[i].amount) + Number(this.amount);
+                            data_added_products[i].amount = Number(amount);
+                            data_added_products[i].total = Number(data_added_products[i].amount) * Number(data_added_products[i].price);
                         }
                     }
                     if (!found) {
-                        this.selected_product.amount = this.amount;
-                        this.added_products.push(this.selected_product);
+                        this.selected_product.amount = Number(this.amount);
+                        data_added_products.push(this.selected_product);
                         this.selected_product = null;
                     }
                 }else{
-                    this.selected_product.amount = this.amount;
-                    this.added_products.push(this.selected_product);
+                    this.selected_product.amount = Number(this.amount);
+                    data_added_products.push(this.selected_product);
                     this.selected_product = null;
                 }
+                this.added_products = [];
             }else{
                 alert('Please select product and insert amount');
+                this.added_products = [];
             }
+            this.added_products = data_added_products;
+            this.setSubtotal();
         },
 
         onSearch(search, loading) {
@@ -118,6 +233,9 @@ export default {
                 loading(true);
                 this.search(loading, search, this)
             }
+        },
+        total(total) {
+            return Number(total).toFixed(2);
         },
         search: _.debounce((loading, search, vm) => {
             axios.get('/ajax/getProducts', {
@@ -136,10 +254,45 @@ export default {
         addedId(){
             return this.added_products.map(product => product.id);
         },
+        removeProduct(index){
+            this.added_products.splice(index, 1);
+            this.setSubtotal();
+        },
+        setSubtotal(){
+            let subtotal = 0;
+            this.added_products.forEach(function(product) {
+                subtotal += product.total;
+            });
+            this.subtotal = Number(subtotal).toFixed(2);
+            this.applydiscount();
+        },
+        applydiscount(){
+            const dis_type = this.setting.percentage;
+            if(dis_type === true){
+                this.dis_price();
+            }else{
+                this.dis_precent();
+            }
+        },
+        dis_precent(){
+            let percentValue = Number(this.discount.percentage);
+            let subtotal = Number(this.subtotal);
+            let price_value = Number(subtotal) * (percentValue / 100);
+            this.discount.price = Number(price_value).toFixed(2);
+        },
+        dis_price(){
+            let priceValue = Number(this.discount.price);
+            let subtotal = Number(this.subtotal);
+            let percent_value = Number(priceValue) / Number(subtotal);
+            this.discount.percentage = Number(percent_value * 100).toFixed(2);
+        },
     }
 }
 </script>
 
-<style>
-
+<style scoped>
+    table.table-sm{
+        font-size: 0.8rem;
+        text-align: center;
+    }
 </style>

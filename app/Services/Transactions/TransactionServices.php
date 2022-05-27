@@ -27,6 +27,11 @@ class TransactionServices extends BaseService
     {
         return $this->model::Today()->get();
     }
+
+    public function getAllPaginated(int $paginate = 10)
+    {
+        return $this->model::paginate($paginate);
+    }
 }
 
 ?>

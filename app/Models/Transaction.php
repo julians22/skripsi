@@ -3,18 +3,20 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Transaction extends Model
 {
-    protected $month, $year;
-    public function __construct() {
-        $this->month = date('m');
-        $this->year = date('Y');
-    }
+
+    /**
+     * The accessors to append to the model's array form.
+     *
+     * @var array
+     */
+    protected $appends = ['grand_total'];
+
     /**
      * The attributes that aren't mass assignable.
      *
@@ -51,11 +53,11 @@ class Transaction extends Model
     public function scopeMonthInYear($query, int $month = 0, int $year = 0): Builder
     {
         if ($month == 0) {
-            $month = $this->month;
+            $month = date('m');
         }
 
         if ($year == 0) {
-            $year = $this->year;
+            $year = date('Y');
         }
 
         return $query->whereMonth('created_at', $month)
@@ -72,5 +74,15 @@ class Transaction extends Model
     public function scopeToday($query): Builder
     {
         return $query->whereDate('created_at', date('Y-m-d'));
+    }
+
+    //get grand total
+    public function getGrandTotalAttribute()
+    {
+        if ($this->discount > 0) {
+            return $this->total - $this->discount;
+        }
+
+        return $this->total;
     }
 }

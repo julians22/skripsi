@@ -50,3 +50,19 @@ if (! function_exists('homeRoute')) {
         return 'frontend.index';
     }
 }
+
+if (!function_exists('rupiah')) {
+    /**
+     * Format the price.
+     *
+     * @param $price
+     * @param int $decimals
+     *
+     * @return string
+     */
+    function rupiah($price, int $decimals = 2)
+    {
+        $value = "Rp. " . number_format($price, $decimals,',','.');
+        return $value;
+    }
+}

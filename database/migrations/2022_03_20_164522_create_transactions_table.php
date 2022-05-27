@@ -15,11 +15,12 @@ class CreateTransactionsTable extends Migration
     {
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
-            $table->string('invoice_number', 20)->unique();
+            $table->string('invoice_number', 225)->unique();
             $table->bigInteger('customer_id')->unsigned();
             $table->decimal('total', 20, 2);
             $table->decimal('discount', 20, 2)->nullable();
             $table->foreign('customer_id')->references('id')->on('customers');
+            $table->string('remarks')->nullable();
             $table->timestamps();
         });
     }

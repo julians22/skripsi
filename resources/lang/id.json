@@ -220,6 +220,9 @@
     "Discount": "Diskon",
     "Tax": "Pajak",
     "Grand Total": "Grand Total",
-    "Action": "Aksi"
-
+    "Action": "Aksi",
+    "Purchases": "Pembelian",
+    "Purchase": "Pembelian",
+    "All Purchases": "Semua Pembelian",
+    "Add Purchase": "Tambah Pembelian"
 }

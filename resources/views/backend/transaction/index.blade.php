@@ -31,29 +31,32 @@
                             </tr>
                         </thead>
 
+                        @if ($transactions->count() > 0)
                         <tbody>
-                            @if ($transactions->count() > 0)
-                                @foreach ($transactions as $transaction)
-                                    <tr>
-                                        <td>{{ $transaction->invoice_number }}</td>
-                                        <td>{{ $transaction->customer->name }}</td>
-                                        <td>{{ $transaction->total }}</td>
-                                        <td>@displayDate($transaction->created_at, 'Y-M-d')</td>
-                                        <td>
-                                            <a href="#"><i class="fas fa-print"></i></a>
-                                            <a href="{{ route('admin.transaction.show', $transaction) }}"><i class="fas fa-eye"></i></a>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            @else
+                            @foreach ($transactions as $transaction)
                                 <tr>
-                                    <td colspan="6" class="text-center">
-                                        <strong>@lang('No Transaction Found')</strong>
+                                    <td>{{ $transaction->invoice_number }}</td>
+                                    <td>{{ $transaction->customer->name }}</td>
+                                    <td>{{ $transaction->total }}</td>
+                                    <td>@displayDate($transaction->created_at, 'Y-M-d')</td>
+                                    <td>
+                                        <a target="_blank" href="{{ route('admin.transaction.print', $transaction) }}"><i class="fas fa-print"></i></a>
+                                        <a href="{{ route('admin.transaction.show', $transaction) }}"><i class="fas fa-eye"></i></a>
                                     </td>
                                 </tr>
-                            @endif
+                            @endforeach
                         </tbody>
+                        @else
+                        <tbody>
+                            <tr>
+                                <td colspan="6" class="text-center">
+                                    <strong>@lang('No Transaction Found')</strong>
+                                </td>
+                            </tr>
+                        </tbody>
+                        @endif
                     </table>
+                    {{ $transactions->links() }}
                 </div>
             </div>
         @endslot

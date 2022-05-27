@@ -1,179 +1,142 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-	<head>
-		<meta charset="utf-8" />
-		<title>Arpan Electric Invoices</title>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<title>Arpan Electric Transaction Invoice {{$transaction->invoice_number}}</title>
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,wght@0,200;0,300;0,400;0,600;0,700;0,900;1,200;1,300;1,400;1,600;1,700;1,900&display=swap" rel="stylesheet">
 
-		<style>
-			.invoice-box {
-				max-width: 800px;
-				margin: auto;
-				padding: 30px;
-				border: 1px solid #eee;
-				box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
-				font-size: 16px;
-				line-height: 24px;
-				font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
-				color: #555;
-			}
+@include('backend.utils.print.includes.font_face')
 
-			.invoice-box table {
-				width: 100%;
-				line-height: inherit;
-				text-align: left;
-			}
+<style type="text/css">
+*{
+    font-family: 'Source Sans Pro', sans-serif;
+    font-weight: 400;
+}
+body{
+	width: 100%;
+    font-size: 14px;
+    font-weight: 300;
+}
+.head-table, .head-table * {
+	font-size: 10px;
+	font-weight: 700;
+}
+.table-transaction {
+    margin-top: 20px;
+    border-width: 1px;
+    border-color: #eee;
+    border-collapse: collapse;
+}
+.table-transaction th, .table-transaction td {
+    border-width: 1px;
+    padding: 8px;
+    border-style: solid;
+    border-color: #eee;
+}
 
-			.invoice-box table td {
-				padding: 5px;
-				vertical-align: top;
-			}
+.table-transaction tbody .heading {
+	background-color: #eee;
+}
+table {
+	border-collapse: collapse;
+}
+.table-transaction tbody .footer.odd {
+	background-color: #eee;
+}
+.table-transaction tbody .footer.even {
+	background-color: #fff;
+}
+.table-transaction tbody .footer-grand {
+	font-size: 14px;
+	background-color: black;
+    color: white;
+	font-weight: 700;
+}
 
-			.invoice-box table tr td:nth-child(2) {
-				text-align: right;
-			}
+.invoice-badge{
+    background-color: #eee;
+    color: #000;
+    padding: 5px;
+    border-radius: 5px;
+}
+</style>
+</head>
+<body>
+	<table width="100%" border="0" cellpadding="5" class="head-table">
+      <tbody>
+        <tr>
+          <td>
+            <img src="{{ asset('img/brand/logo.jpeg') }}" style="width: 100%; max-width: 180px" />
+          </td>
+          <td width="50%">
+          	<table border="0" cellpadding="5" class="head-information">
+              <tbody>
+                <tr>
+                  <th align="left">No. Faktur</th>
+                  <td>: <span class="invoice-badge">{{ $transaction->invoice_number }}</span></td>
+                </tr>
+                <tr>
+                  <th align="left">Tanggal Transaksi</th>
+                  <td>: @displayDate($transaction->created_at, 'Y/m/d')</td>
+                </tr>
+                <tr>
+                    <th align="left">Nama Pelanggan</th>
+                    <td>: Tn/Ny {{ $transaction->customer->name }}</td>
+                </tr>
+                <tr>
+                    <th align="left">No. HP.</th>
+                    <td>: {{ $transaction->customer->phone ?? '-' }}</td>
+                </tr>
+                <tr>
+                    <th align="left">Email</th>
+                    <td>: {{ $transaction->customer->email ?? '-' }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+      </tbody>
+    </table>
 
-			.invoice-box table tr.top table td {
-				padding-bottom: 20px;
-			}
-
-			.invoice-box table tr.top table td.title {
-				font-size: 45px;
-				line-height: 45px;
-				color: #333;
-			}
-
-			.invoice-box table tr.information table td {
-				padding-bottom: 40px;
-			}
-
-			.invoice-box table tr.heading td {
-				background: #eee;
-				border-bottom: 1px solid #ddd;
-				font-weight: bold;
-			}
-
-			.invoice-box table tr.details td {
-				padding-bottom: 20px;
-			}
-
-			.invoice-box table tr.item td {
-				border-bottom: 1px solid #eee;
-			}
-
-			.invoice-box table tr.item.last td {
-				border-bottom: none;
-			}
-
-			.invoice-box table tr.total td:nth-child(2) {
-				border-top: 2px solid #eee;
-				font-weight: bold;
-			}
-
-			@media only screen and (max-width: 600px) {
-				.invoice-box table tr.top table td {
-					width: 100%;
-					display: block;
-					text-align: center;
-				}
-
-				.invoice-box table tr.information table td {
-					width: 100%;
-					display: block;
-					text-align: center;
-				}
-			}
-
-			/** RTL **/
-			.invoice-box.rtl {
-				direction: rtl;
-				font-family: Tahoma, 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
-			}
-
-			.invoice-box.rtl table {
-				text-align: right;
-			}
-
-			.invoice-box.rtl table tr td:nth-child(2) {
-				text-align: left;
-			}
-		</style>
-	</head>
-
-	<body>
-		<div class="invoice-box">
-			<table cellpadding="0" cellspacing="0">
-				<tr class="top">
-					<td colspan="4">
-						<table>
-							<tr>
-								<td class="title">
-									{{-- <img src="https://www.sparksuite.com/images/logo.png" style="width: 100%; max-width: 300px" /> --}}
-									<img src="{{ asset('img/brand/logo.jpeg') }}" style="width: 100%; max-width: 200px" />
-								</td>
-
-								<td>
-									Invoice #: {{ $transaction->invoice_number }}<br />
-									Created: @displayDate($transaction->created_at, 'Y-M-d')<br />
-								</td>
-							</tr>
-						</table>
-					</td>
-				</tr>
-
-				<tr class="information">
-					<td colspan="4">
-						<table>
-							<tr>
-								<td>
-									Pasar Kenari Lama<br />
-									AL01 AKS 171 Jl. Salemba Raya<br />
-									Jakarta Pusat.
-								</td>
-
-								<td>
-									{{ $transaction->customer->name }}<br />
-                                    {{ $transaction->customer->phone }}<br />
-                                    {{ $transaction->customer->email }}
-								</td>
-							</tr>
-						</table>
-					</td>
-				</tr>
-
-				{{-- <tr class="heading">
-					<td>Payment Method</td>
-
-					<td>Check #</td>
-				</tr> --}}
-
-				{{-- <tr class="details">
-					<td>Check</td>
-
-					<td>1000</td>
-				</tr> --}}
-
-				<tr class="heading">
-					<td>Item</td>
-					<td>Quantity</td>
-					<td>Price</td>
-					<td>Subtotal</td>
-				</tr>
-
-                @foreach ($transaction->details as $detail)
-                    <tr class="item">
-                        <td>{{ $detail->product->name }}</td>
-                        <td style="text-align: center">{{ $detail->quantity }}</td>
-                        <td>{{ number_format($detail->unit_price, 2) }}</td>
-                        <td>{{ number_format($detail->total, 2) }}</td>
-                    </tr>
-                @endforeach
-
-				<tr class="total">
-					<td colspan="3" style="font-weight: 800">Total</td>
-
-					<td>{{ $transaction->total }}</td>
-				</tr>
-			</table>
-		</div>
-	</body>
+    <table width="100%" class="table-transaction">
+      <tbody>
+        <tr class="heading">
+          <th width="51%" scope="col">Item</th>
+          <th width="11%" scope="col">Jml</th>
+          <th width="19%" scope="col">Harga</th>
+          <th width="19%" scope="col" align="center">Total</th>
+        </tr>
+        @foreach ($transaction->details as $detail)
+            <tr class="item">
+                <td>{{ $detail->product->name }}</td>
+                <td style="text-align: center">{{ $detail->quantity }}</td>
+                <td>{{ rupiah($detail->unit_price) }}</td>
+                <td align="left">{{ rupiah($detail->total) }}</td>
+            </tr>
+        @endforeach
+        <tr class="footer odd">
+        	<th colspan="3" align="right">
+            	Subtotal
+            </th>
+            <td align="left">
+                {{ rupiah($transaction->total) }}
+            </td>
+        </tr>
+        @if (isset($transaction->discount))
+            <tr class="footer even">
+                <th colspan="3"  align="right">
+                    Discount
+                </th>
+                <td align="left">{{ rupiah($transaction->discount) }}</td>
+            </tr>
+        @endif
+        <tr class="footer-grand">
+        	<th colspan="3"  align="right">
+            	Grand Total
+            </th>
+            <td align="left">{{ rupiah($transaction->grand_total) }}</td>
+        </tr>
+      </tbody>
+    </table>
+</body>
 </html>

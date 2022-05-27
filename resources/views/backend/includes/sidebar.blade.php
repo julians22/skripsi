@@ -54,6 +54,32 @@
                     </ul>
             </li>
 
+            <li class="c-sidebar-nav-dropdown {{ activeClass(Route::is('admin.purchase.*'), 'c-open c-show') }}">
+                <x-utils.link
+                    href="#"
+                    icon="c-sidebar-nav-icon cil-layers"
+                    class="c-sidebar-nav-dropdown-toggle"
+                    :text="__('Purchase')" />
+                    <ul class="c-sidebar-nav-dropdown-items">
+                        <li class="c-sidebar-nav-item">
+                            <x-utils.link
+                                :href="route('admin.purchase.index')"
+                                class="c-sidebar-nav-link"
+                                :active="activeClass(Route::is('admin.purchase.index'), 'c-active')"
+                                :text="__('All Purchases')" />
+                        </li>
+                        <li class="c-sidebar-nav-item">
+                            <x-utils.link
+                                :href="route('admin.purchase.create')"
+                                class="c-sidebar-nav-link"
+                                :active="activeClass(Route::is('admin.purchase.create'), 'c-active')"
+                                :text="__('Add Purchase')" />
+                        </li>
+                    </ul>
+            </li>
+
+
+
             <li class="c-sidebar-nav-title">@lang('Master Data')</li>
 
             <li class="c-sidebar-nav-dropdown {{ activeClass(Route::is('admin.product.*'), 'c-open c-show') }}">

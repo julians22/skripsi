@@ -8,6 +8,7 @@ use App\Http\Requests\Backend\Transactions\Out\StoreTransactionRequest;
 use App\Models\Customer;
 use App\Models\Product;
 use App\Models\Transaction;
+use App\Services\Transactions\TransactionServices;
 use Barryvdh\DomPDF\Facade\Pdf;
 use DB;
 use Exception;
@@ -16,6 +17,18 @@ use Ramsey\Uuid\Uuid;
 
 class TransactionController extends Controller
 {
+    /** @var $transactionServices Transaction Services */
+    protected $transactionServices;
+
+    /**
+     * TransactionController constructor.
+     *
+     * @param TransactionServices $transactionServices
+     */
+    public function __construct(TransactionServices $transactionServices) {
+        $this->transactionServices = $transactionServices;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -23,7 +36,7 @@ class TransactionController extends Controller
      */
     public function index()
     {
-        $transactions = Transaction::all();
+        $transactions = $this->transactionServices->getAllPaginated();
         return view('backend.transaction.index', compact('transactions'));
     }
 
@@ -47,13 +60,16 @@ class TransactionController extends Controller
      */
     public function store(StoreTransactionRequest $request)
     {
+        // dd($request->all());
+        $code = 'INV/' . date('Ymd') . '/'. $request->selected_customer .'/' . Uuid::uuid4()->toString();
         DB::beginTransaction();
-
         try {
             $transaction = Transaction::create([
-                'invoice_number' => 'INV-' . time(),
+                'invoice_number' => $code,
                 'customer_id' => $request->selected_customer,
                 'total' => $request->total,
+                'discount' => $request->discounts['price'],
+                'remarks' => $request->remarks
             ]);
 
             foreach ($request->products as $product) {
@@ -126,7 +142,8 @@ class TransactionController extends Controller
     {
         $transaction->with('customer', 'details');
         // return view('backend.utils.print.transactions.out', compact('transaction'));
-        $pdf = Pdf::loadView('backend.utils.print.transactions.out', compact('transaction'));
+        $pdf = Pdf::loadView('backend.utils.print.transactions.out', compact('transaction'))->setPaper('a4', 'landscape')->setOptions(['dpi' => 90, 'defaultFont' => 'Source Sans Pro', 'isHtml5ParserEnabled' => true,
+        'isRemoteEnabled' => true]);
         return $pdf->stream('invoice.pdf');
     }
 }

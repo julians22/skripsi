@@ -40,7 +40,7 @@
                                     <tr>
                                         <td>{{ $product->code }}</td>
                                         <td>{{ $product->name }}</td>
-                                        <td>{{ $product->price }}</td>
+                                        <td>{{ rupiah($product->price) }}</td>
                                         <td>{{ $product->quantity }}</td>
                                         <td>{{ $product->category->name ?? 'Not Categoried' }}</td>
                                         <td></td>

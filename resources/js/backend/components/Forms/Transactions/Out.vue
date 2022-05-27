@@ -108,7 +108,7 @@
                                                 <div class="input-group-prepend">
                                                     <span class="input-group-text" id="inputGroup-sizing-sm">%</span>
                                                 </div>
-                                                <input v-model="discount.percentage" type="number" :disabled="setting.percentage == 1" class="form-control" name="dicounts['percent']">
+                                                <input v-model="discount.percentage" type="number" :readonly="setting.percentage == 1" class="form-control" name="discounts[percent]">
                                             </div>
                                         </div>
                                         <div class="col-md-2 text-center p-0">
@@ -119,7 +119,7 @@
                                                 <div class="input-group-prepend">
                                                     <span class="input-group-text" id="inputGroup-sizing-sm">Rp</span>
                                                 </div>
-                                                <input v-model="discount.price" type="number" :disabled="setting.percentage == 0" class="form-control" name="dicounts['price']">
+                                                <input v-model="discount.price" type="number" :readonly="setting.percentage == 0" class="form-control" name="discounts[price]">
                                             </div>
                                         </div>
                                     </div>
@@ -184,11 +184,11 @@ export default {
         }
     },
     mounted() {
-        if (this.old_selected_products) {
-            array.forEach(element => {
+        // if (this.old_selected_products) {
+        //     array.forEach(element => {
 
-            });
-        }
+        //     });
+        // }
     },
     components: {
         TableRow,

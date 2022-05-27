@@ -1,5 +1,5 @@
 <template>
-    <span>Laravel Boilerplate</span>
+    <span>Arpan Electrical Admin Page</span>
 </template>
 
 <script>

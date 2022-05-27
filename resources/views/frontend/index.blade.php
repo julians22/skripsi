@@ -95,10 +95,13 @@
                     <example-component></example-component>
                 </div><!--title-->
 
-                <div class="links">
-                    <a href="http://laravel-boilerplate.com" target="_blank"><i class="fa fa-book"></i> @lang('Docs')</a>
-                    <a href="https://github.com/rappasoft/laravel-boilerplate" target="_blank"><i class="fab fa-github"></i> GitHub</a>
-                </div><!--links-->
+                @auth
+                    @if ($logged_in_user->isAdmin())
+                        <div class="links">
+                            <a href="{{ route('admin.dashboard') }}">@lang('Go To Dashboard')</a>
+                        </div><!--links-->
+                    @endif
+                @endauth
             </div><!--content-->
         </div><!--app-->
 

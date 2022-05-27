@@ -9,6 +9,12 @@ use Illuminate\Http\Request;
 
 class SupplierController extends Controller
 {
+
+    public function __construct() {
+        abort('503 ', 'Under Maintenance');
+        return;
+    }
+
     /**
      * Display a listing of the resource.
      *

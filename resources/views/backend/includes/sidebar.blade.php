@@ -1,11 +1,11 @@
 <div class="c-sidebar c-sidebar-dark c-sidebar-fixed c-sidebar-lg-show" id="sidebar">
     <div class="c-sidebar-brand d-lg-down-none">
-        <div class="c-sidebar-brand d-lg-down-none">
+        <div class="c-sidebar-brand-full">
             <img src="{{ asset('img/brand/logo.jpeg') }}" alt="Arpan Electric" width="166" height="89">
         </div>
-        <svg class="c-sidebar-brand-minimized" width="46" height="46" alt="CoreUI Logo">
-            <use xlink:href="{{ asset('img/brand/coreui.svg#signet') }}"></use>
-        </svg>
+        <div class="c-sidebar-brand-minimized">
+            <span>AE</span>
+        </div>
     </div><!--c-sidebar-brand-->
 
     <ul class="c-sidebar-nav">

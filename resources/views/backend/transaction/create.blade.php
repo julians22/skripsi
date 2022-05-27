@@ -33,3 +33,11 @@
 </x-forms.post>
 
 @endsection
+
+@push('after-scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelector('.c-sidebar-minimizer').click();
+        });
+    </script>
+@endpush

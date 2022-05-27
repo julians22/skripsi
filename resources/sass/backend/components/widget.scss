@@ -1,0 +1,50 @@
+@import '~bootstrap/scss/_variables.scss';
+
+.widget-wrapper{
+    background-color: $primary;
+    color: $white;
+    border-radius: $border-radius-lg;
+    padding: $spacer;
+    margin-bottom: $spacer;
+    box-shadow: $box-shadow-sm;
+    .widget-header{
+
+        .widget-title{
+            font-size: 1rem;
+            font-weight: 500;
+            line-height: 1.5;
+            margin-bottom: 0.5rem;
+        }
+
+    }
+
+    &.secondary{
+        background-color: $secondary;
+    }
+
+    &.success{
+        background-color: $success;
+    }
+
+    &.danger{
+        background-color: $danger;
+    }
+
+    &.warning{
+        background-color: $warning;
+    }
+
+    &.info{
+        background-color: $info;
+    }
+
+    &.light{
+        background-color: $light;
+        color: $dark;
+    }
+
+    &.dark{
+        background-color: $dark;
+        color: $light;
+    }
+}

@@ -124,7 +124,8 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div>
+                                <div v-if="subtotal > 0">
+                                    <span class="text-bolder">Grand Total</span>
                                     <span v-text="grand_total"></span>
                                 </div>
                             </div>
@@ -178,7 +179,8 @@ export default {
     },
     computed: {
         grand_total(){
-            return this.subtotal - this.discount.price
+            const total = this.subtotal - this.discount.price
+            return Number(total).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
         }
     },
     mounted() {
@@ -226,6 +228,8 @@ export default {
             }
             this.added_products = data_added_products;
             this.setSubtotal();
+
+            this.amount = 1;
         },
 
         onSearch(search, loading) {

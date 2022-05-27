@@ -11,8 +11,8 @@ class SupplierController extends Controller
 {
 
     public function __construct() {
-        abort('503 ', 'Under Maintenance');
-        return;
+        // abort('503 ', 'Under Maintenance');
+        // return;
     }
 
     /**

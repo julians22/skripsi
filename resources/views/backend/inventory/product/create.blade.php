@@ -6,7 +6,7 @@
 <x-forms.post :action="route('admin.product.store')">
     <x-backend.card>
         @slot('header')
-            @lang('Create New Products')
+            @lang('Create New Product')
         @endslot
 
         @slot('headerActions')
@@ -19,36 +19,36 @@
 
         @slot('body')
             <div class="form-group row">
-                <label for="product_name" class="col-form-label col-md-2">Product Name</label>
+                <label for="product_name" class="col-form-label col-md-2">@lang('Product Name')</label>
                 <div class="col-md-10">
-                    <input type="text" name="product_name" id="product_name" class="form-control" placeholder="Product Name" required>
+                    <input type="text" name="product_name" id="product_name" class="form-control" placeholder="@lang('Product Name')" required>
                 </div>
             </div>
             <div class="form-group row">
-                <label for="product_code" class="col-form-label col-md-2">Product Code</label>
+                <label for="product_code" class="col-form-label col-md-2">@lang('Product Code')</label>
                 <div class="col-md-10">
-                    <input type="text" name="product_code" id="product_code" class="form-control" placeholder="Product Code">
+                    <input type="text" name="product_code" id="product_code" class="form-control" placeholder="@lang('Product Code')">
                 </div>
             </div>
             <div>
                 <select-category create_route="{{ route('admin.category.create') }}" :categories_model='@json($categories)'></select-category>
             </div>
             <div class="form-group row">
-                <label for="product_description" class="col-form-label col-md-2">Product Description</label>
+                <label for="product_description" class="col-form-label col-md-2">@lang('Product Description')</label>
                 <div class="col-md-10">
-                    <textarea name="product_description" id="product_description" class="form-control" placeholder="Product Description" required></textarea>
+                    <textarea name="product_description" id="product_description" class="form-control" placeholder="@lang('Product Description')" required></textarea>
                 </div>
             </div>
             <div class="form-group row">
-                <label for="product_price" class="col-form-label col-md-2">Product Price</label>
+                <label for="product_price" class="col-form-label col-md-2">@lang('Price')</label>
                 <div class="col-md-10">
-                    <input type="number" name="product_price" id="product_price" class="form-control" placeholder="Product Price" required>
+                    <input type="number" name="product_price" id="product_price" class="form-control" placeholder="@lang('Price')" required>
                 </div>
             </div>
             <div class="form-group row">
-                <label for="product_stock" class="col-form-label col-md-2">Product Stock</label>
+                <label for="product_stock" class="col-form-label col-md-2">@lang('Stock')</label>
                 <div class="col-md-10">
-                    <input type="number" name="product_stock" id="product_stock" class="form-control" placeholder="Product Stock" required>
+                    <input type="number" name="product_stock" id="product_stock" class="form-control" placeholder="@lang('Stock')" required>
                 </div>
             </div>
         @endslot

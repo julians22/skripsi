@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-<title>Arpan Electric Transaction Invoice {{$transaction->invoice_number}}</title>
+<title>Arpan Electric Sales Invoice {{$sales->invoice_number}}</title>
 <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,wght@0,200;0,300;0,400;0,600;0,700;0,900;1,200;1,300;1,400;1,600;1,700;1,900&display=swap" rel="stylesheet">
 
 @include('backend.utils.print.includes.font_face')
@@ -73,23 +73,23 @@ table {
               <tbody>
                 <tr>
                   <th align="left">No. Faktur</th>
-                  <td>: <span class="invoice-badge">{{ $transaction->invoice_number }}</span></td>
+                  <td>: <span class="invoice-badge">{{ $sales->invoice_number }}</span></td>
                 </tr>
                 <tr>
                   <th align="left">Tanggal Transaksi</th>
-                  <td>: @displayDate($transaction->created_at, 'Y/m/d')</td>
+                  <td>: @displayDate($sales->created_at, 'Y/m/d')</td>
                 </tr>
                 <tr>
                     <th align="left">Nama Pelanggan</th>
-                    <td>: Tn/Ny {{ $transaction->customer->name }}</td>
+                    <td>: Tn/Ny {{ $sales->customer->name }}</td>
                 </tr>
                 <tr>
                     <th align="left">No. HP.</th>
-                    <td>: {{ $transaction->customer->phone ?? '-' }}</td>
+                    <td>: {{ $sales->customer->phone ?? '-' }}</td>
                 </tr>
                 <tr>
                     <th align="left">Email</th>
-                    <td>: {{ $transaction->customer->email ?? '-' }}</td>
+                    <td>: {{ $sales->customer->email ?? '-' }}</td>
                 </tr>
               </tbody>
             </table>
@@ -106,7 +106,7 @@ table {
           <th width="19%" scope="col">Harga</th>
           <th width="19%" scope="col" align="center">Total</th>
         </tr>
-        @foreach ($transaction->details as $detail)
+        @foreach ($sales->details as $detail)
             <tr class="item">
                 <td>{{ $detail->product->name }}</td>
                 <td style="text-align: center">{{ $detail->quantity }}</td>
@@ -119,23 +119,51 @@ table {
             	Subtotal
             </th>
             <td align="left">
-                {{ rupiah($transaction->total) }}
+                {{ rupiah($sales->total) }}
             </td>
         </tr>
-        @if (isset($transaction->discount))
+        @if (isset($sales->discount))
             <tr class="footer even">
                 <th colspan="3"  align="right">
                     Discount
                 </th>
-                <td align="left">{{ rupiah($transaction->discount) }}</td>
+                <td align="left">{{ rupiah($sales->discount) }}</td>
             </tr>
         @endif
         <tr class="footer-grand">
         	<th colspan="3"  align="right">
             	Grand Total
             </th>
-            <td align="left">{{ rupiah($transaction->grand_total) }}</td>
+            <td align="left">{{ rupiah($sales->grand_total) }}</td>
         </tr>
+        @if ($sales->transaction->hasPayment())
+        @php
+            $payment = $sales->transaction->payment;
+        @endphp
+        <tr>
+            <th>
+                Pembayaran
+            </th>
+            <th colspan="2" align="right">
+                @displayDate($payment->created_at, 'Y/m/d')
+            </th>
+            <td align="left">
+                {{ rupiah($payment->amount) }}
+            </td>
+        </tr>
+        @else
+            <tr>
+                <th>
+                    Pembayaran
+                </th>
+                <th colspan="2" align="right">
+                    -
+                </th>
+                <td align="left">
+                    -
+                </td>
+            </tr>
+        @endif
       </tbody>
     </table>
 </body>

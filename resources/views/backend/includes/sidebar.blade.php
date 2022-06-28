@@ -30,26 +30,28 @@
             )
         )
 
-            <li class="c-sidebar-nav-dropdown {{ activeClass(Route::is('admin.transaction.*'), 'c-open c-show') }}">
+            <li class="c-sidebar-nav-title">@lang('Transaction')</li>
+
+            <li class="c-sidebar-nav-dropdown {{ activeClass(Route::is('admin.sales.*'), 'c-open c-show') }}">
                 <x-utils.link
                     href="#"
                     icon="c-sidebar-nav-icon cil-layers"
                     class="c-sidebar-nav-dropdown-toggle"
-                    :text="__('Transaction')" />
+                    :text="__('Sales')" />
                     <ul class="c-sidebar-nav-dropdown-items">
                         <li class="c-sidebar-nav-item">
                             <x-utils.link
-                                :href="route('admin.transaction.index')"
+                                :href="route('admin.sales.index')"
                                 class="c-sidebar-nav-link"
-                                :active="activeClass(Route::is('admin.transaction.index'), 'c-active')"
-                                :text="__('All Transactions')" />
+                                :active="activeClass(Route::is('admin.sales.index'), 'c-active')"
+                                :text="__('All Sales')" />
                         </li>
                         <li class="c-sidebar-nav-item">
                             <x-utils.link
-                                :href="route('admin.transaction.create')"
+                                :href="route('admin.sales.create')"
                                 class="c-sidebar-nav-link"
-                                :active="activeClass(Route::is('admin.transaction.create'), 'c-active')"
-                                :text="__('Add Transaction')" />
+                                :active="activeClass(Route::is('admin.sales.create'), 'c-active')"
+                                :text="__('Add Sales')" />
                         </li>
                     </ul>
             </li>

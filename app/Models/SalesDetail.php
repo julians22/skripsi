@@ -6,9 +6,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
-class TransactionDetail extends Model
+class SalesDetail extends Model
 {
     use HasFactory;
+
+    protected $table = 'sale_details';
 
     /**
      * The attributes that aren't mass assignable.
@@ -25,7 +27,7 @@ class TransactionDetail extends Model
     protected $appends = ['total'];
 
     /**
-     * Get the product associated with the TransactionDetail
+     * Get the product associated with the SalesDetail
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */

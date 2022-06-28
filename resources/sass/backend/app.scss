@@ -8,3 +8,21 @@
 
 
 @import './components/widget.scss';
+
+$indigo: #6574cd;
+$orange: #f6993f;
+$black: #212529;
+
+.badge-indigo {
+  background-color: $indigo;
+  color: $white;
+}
+
+.badge-orange {
+  background-color: $orange;
+}
+
+.table-black {
+    background-color: $black;
+    color: $white;
+}

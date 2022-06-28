@@ -1,8 +1,8 @@
 <footer class="c-footer">
     <div>
         <strong>
-            @lang('Copyright') &copy; {{ date('Y') }}
-            <x-utils.link href="http://laravel-boilerplate.com" target="_blank" :text="__(appName())" />
+            @lang('Copyright') &copy; 2022
+            <x-utils.link href="{{ URL::to('/') }}" target="_blank" :text="__(appName())" />
         </strong>
 
         @lang('All Rights Reserved')
@@ -10,7 +10,6 @@
 
     <div class="mfs-auto">
         @lang('Powered by')
-        <x-utils.link href="http://laravel-boilerplate.com" target="_blank" :text="__(appName())" /> &
-        <x-utils.link href="https://coreui.io" target="_blank" text="CoreUI" />
+        <x-utils.link href="{{ URL::to('/') }}" target="_blank" :text="__(appName())" />
     </div>
 </footer>

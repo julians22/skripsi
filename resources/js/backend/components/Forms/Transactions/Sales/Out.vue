@@ -5,6 +5,14 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="form-group">
+                            <label >Select category</label>
+                            <select class="form-control" v-model="selected_category" @change="onCategoryChange">
+                                <option value="0">All</option>
+                                <option v-for="(category, index) in categories" :value="category.id" :key="index">{{ category.name }}</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label >Select Product</label>
                             <v-select label="name"
                                 v-model="selected_product"
                                 :options="products"
@@ -18,7 +26,7 @@
                             <div class="form-group">
                                 <label for="amount">Amount</label>
                                 <div class="row">
-                                    <div class="col-10">
+                                    <div class="col-8">
                                         <input type="number" class="form-control form-control-sm" id="amount" placeholder="Quantity" v-model="amount">
                                     </div>
                                     <div class="col-2">
@@ -140,9 +148,13 @@
 
 <script>
 import TableRow from './Table/Row.vue'
+
 export default {
     props: {
         products_model: {
+            type: Array,
+        },
+        categories_model: {
             type: Array,
         },
         old_selected_products: {
@@ -152,6 +164,7 @@ export default {
     data() {
         return {
             products: [],
+            selected_category: 0,
             selected_product: null,
             added_products: [],
             amount: 1,
@@ -181,14 +194,18 @@ export default {
         grand_total(){
             const total = this.subtotal - this.discount.price
             return Number(total).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-        }
-    },
-    mounted() {
-        // if (this.old_selected_products) {
-        //     array.forEach(element => {
+        },
+        categories(){
+            const categories_model = this.categories_model;
+            let categories = categories_model.map(category => {
+                return {
+                    id: category.id,
+                    name: category.name,
+                }
+            });
 
-        //     });
-        // }
+            return categories;
+        },
     },
     components: {
         TableRow,
@@ -243,8 +260,10 @@ export default {
         },
         search: _.debounce((loading, search, vm) => {
             axios.get('/ajax/getProducts', {
-                    search: search,
-                    added: vm.added_products
+                    params: {
+                        search: search,
+                        category: vm.selected_category,
+                    }
                 })
                 .then(res => {
                     vm.products = res.data;
@@ -289,6 +308,24 @@ export default {
             let subtotal = Number(this.subtotal);
             let percent_value = Number(priceValue) / Number(subtotal);
             this.discount.percentage = Number(percent_value * 100).toFixed(2);
+        },
+        onCategoryChange(e){
+            let value = e.target.value;
+            axios.get('/ajax/getProducts', {
+                params: {
+                    category: value
+                }
+            })
+            .then(res => {
+                console.log(res);
+                this.products = res.data;
+                this.selected_category = value;
+                // loading(false);
+            })
+            .catch(error => {
+                console.log(error);
+                // loading(false);
+            });
         },
     }
 }

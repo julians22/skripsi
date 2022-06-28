@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="form-group row">
-            <label for="category" class="col-md-2 col-form-label">Product Category</label>
+            <label for="category" class="col-md-2 col-form-label">{{ title }}</label>
             <div class="col-md-10">
                 <input type="hidden" name="selected_category" v-bind:value="getCategoryId(selected_category)">
                 <v-select label="name"
@@ -33,6 +33,12 @@ export default {
             type: String,
             default: '',
         },
+        selected: {
+            default: null,
+        },
+        title: {
+            default: 'Select Category',
+        }
     },
     data() {
         return {
@@ -42,6 +48,9 @@ export default {
     },
     created() {
         this.categories = this.categories_model;
+        if(this.selected) {
+            this.selected_category = this.selected;
+        }
     },
     methods: {
         onSearch(search, loading) {

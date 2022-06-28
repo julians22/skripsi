@@ -2,23 +2,27 @@
 
 namespace App\Http\Controllers\Backend;
 
-use App\Services\Transactions\TransactionServices;
+use App\Services\Transactions\PurchaseServices;
+use App\Services\Transactions\SalesServices;
 
 /**
  * Class DashboardController.
  */
 class DashboardController
 {
-    protected $transactionServices;
+    protected $salesServices;
+    protected $purchaseServices;
 
     /**
      * DashboardController constructor.
      *
-     * @param TransactionServices $transactionServices
+     * @param SalesServices $salesServices
+     * @param PurchaseServices $purchaseServices
      */
-    public function __construct(TransactionServices $transactionServices)
+    public function __construct(SalesServices $salesServices, PurchaseServices $purchaseServices)
     {
-        $this->transactionServices = $transactionServices;
+        $this->salesServices = $salesServices;
+        $this->purchaseServices = $purchaseServices;
     }
 
     /**
@@ -26,28 +30,49 @@ class DashboardController
      */
     public function index()
     {
-        $currentMonthTransactions = $this->transactionServices->getByMonth(date('m'), date('Y'));
+        $currentMonthSales = $this->salesServices->getByMonth(date('m'), date('Y'));
         $sellingThisMonth = 0;
-        foreach ($currentMonthTransactions as $transaction) {
-            $sellingThisMonth += $transaction->total;
+        foreach ($currentMonthSales as $sale) {
+            $sellingThisMonth += $sale->total;
         }
 
-        $lastMonthTransactions = $this->transactionServices->getByMonth(date('m') - 1, date('Y'));
+        $lastMonthSales = $this->salesServices->getByMonth(date('m') - 1, date('Y'));
         $sellingLastMonth = 0;
-        foreach ($lastMonthTransactions as $transaction) {
-            $sellingLastMonth += $transaction->total;
+        foreach ($lastMonthSales as $sale) {
+            $sellingLastMonth += $sale->total;
         }
 
-        $todayTransactions = $this->transactionServices->getToday();
+        $todaySales = $this->salesServices->getToday();
         $sellingToday = 0;
-        foreach ($todayTransactions as $transaction) {
-            $sellingToday += $transaction->total;
+        foreach ($todaySales as $sale) {
+            $sellingToday += $sale->total;
+        }
+
+        $currentMonthPurchase = $this->purchaseServices->getByMonth(date('m'), date('Y'));
+        $purchasingThisMonth = 0;
+        foreach ($currentMonthPurchase as $purchase) {
+            $purchasingThisMonth += $purchase->total;
+        }
+
+        $lastMonthPurchase = $this->purchaseServices->getByMonth(date('m') - 1, date('Y'));
+        $purchasingLastMonth = 0;
+        foreach ($lastMonthPurchase as $purchase) {
+            $purchasingLastMonth += $purchase->total;
+        }
+
+        $todayPurchase = $this->purchaseServices->getToday();
+        $purchasingToday = 0;
+        foreach ($todayPurchase as $purchase) {
+            $purchasingToday += $purchase->total;
         }
 
         $contents = [
             'selling_this_month' => number_format($sellingThisMonth, 0, ',', '.'),
             'selling_last_month' => number_format($sellingLastMonth, 0, ',', '.'),
             'selling_today' => number_format($sellingToday, 0, ',', '.'),
+            'purchasing_this_month' => number_format($purchasingThisMonth, 0, ',', '.'),
+            'purchasing_last_month' => number_format($purchasingLastMonth, 0, ',', '.'),
+            'purchasing_today' => number_format($purchasingToday, 0, ',', '.'),
         ];
 
         return view('backend.dashboard', compact('contents'));

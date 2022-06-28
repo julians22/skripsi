@@ -2,22 +2,24 @@
 
 namespace App\Services\Transactions;
 
-use App\Models\Transaction;
+use App\Models\Purchase;
 use App\Services\BaseService;
 
-class TransactionServices extends BaseService
+class PurchaseServices extends BaseService
 {
     /**
-     * TransactionServices constructor.
+     * PurchaseServices constructor.
      *
-     *
-     * @param Transaction $transaction Transaction Model
-     **/
-    public function __construct(Transaction $transaction)
-    {
-        $this->model = $transaction;
+     * @param Purchase $purchase Purchase Model
+     */
+
+    public function __construct(Purchase $purchase){
+        $this->model = $purchase;
     }
 
+    /**
+     * Get by month
+     */
     public function getByMonth(int $month = 0, int $year = 0)
     {
         return $this->model::MonthInYear($month, $year)->get();
@@ -33,5 +35,3 @@ class TransactionServices extends BaseService
         return $this->model::paginate($paginate);
     }
 }
-
-?>

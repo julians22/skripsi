@@ -2,20 +2,17 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Transaction extends Model
 {
+    use HasFactory;
 
-    /**
-     * The accessors to append to the model's array form.
-     *
-     * @var array
-     */
-    protected $appends = ['grand_total'];
+    const STATUS_PENDING = 'pending';
+    const STATUS_PAID = 'paid';
+    const STATUS_CANCELED = 'canceled';
 
     /**
      * The attributes that aren't mass assignable.
@@ -25,64 +22,35 @@ class Transaction extends Model
     protected $guarded = ['id'];
 
     /**
-     * Get all of the details for the Transaction
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function details(): HasMany
-    {
-        return $this->hasMany(TransactionDetail::class, 'transaction_id', 'id');
-    }
-
-    /**
-     * Get the customer associated with the Transaction
+     * Get the payment associated with the Transaction
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
-    public function customer(): HasOne
+    public function payment(): HasOne
     {
-        return $this->hasOne(Customer::class, 'id', 'customer_id');
+        return $this->hasOne(Payment::class, 'transaction_id', 'id');
     }
 
     /**
-     * Scope a query to only include monthly transactions.
-     *
-     * @param  \Illuminate\Database\Eloquent\Builder $query
-     * @return \Illuminate\Database\Eloquent\Builder
+     * Get the parrent typeable model with the Transaction
      */
-    public function scopeMonthInYear($query, int $month = 0, int $year = 0): Builder
+    public function typeable()
     {
-        if ($month == 0) {
-            $month = date('m');
-        }
-
-        if ($year == 0) {
-            $year = date('Y');
-        }
-
-        return $query->whereMonth('created_at', $month)
-            ->whereYear('created_at', $year);
+        return $this->morphTo();
     }
 
     /**
-     * Scope a query to only include today transactions.
-     *
-     * @param  \Illuminate\Database\Eloquent\Builder $query
-     * @return \Illuminate\Database\Eloquent\Builder
+     * Has the Transaction been paid?
      */
-
-    public function scopeToday($query): Builder
-    {
-        return $query->whereDate('created_at', date('Y-m-d'));
+    public function isPaid(){
+        return $this->status === self::STATUS_PAID;
     }
 
-    //get grand total
-    public function getGrandTotalAttribute()
-    {
-        if ($this->discount > 0) {
-            return $this->total - $this->discount;
-        }
-
-        return $this->total;
+    /**
+     * The model hasPayment
+     */
+    public function hasPayment(){
+        return $this->payment !== null;
     }
+
 }

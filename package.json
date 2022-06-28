@@ -33,6 +33,11 @@
         "vue-template-compiler": "^2.6.10"
     },
     "dependencies": {
+        "@vue/composition-api": "^1.6.3",
+        "chart.js": "^3.8.0",
+        "pinia": "^2.0.14",
+        "vue-chartjs": "^4.1.1",
+        "vue-rangedate-picker": "^1.0.0",
         "vue-select": "^3.18.3"
     }
 }

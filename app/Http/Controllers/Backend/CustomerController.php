@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Backend\Customers\CreateCustomerRequest;
+use App\Http\Requests\Backend\Customers\UpdateCustomerRequest;
 use App\Models\Customer;
 use Illuminate\Http\Request;
 
@@ -61,7 +62,7 @@ class CustomerController extends Controller
      */
     public function edit(Customer $customer)
     {
-        //
+        return view('backend.customer.edit', compact('customer'));
     }
 
     /**
@@ -71,9 +72,10 @@ class CustomerController extends Controller
      * @param  \App\Models\Customer  $customer
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Customer $customer)
+    public function update(UpdateCustomerRequest $request, Customer $customer)
     {
-        //
+        $customer->update($request->only('name', 'email', 'phone', 'address'));
+        return redirect()->route('admin.customer.index')->withFlashSuccess(__('Customer successfully updated.'));
     }
 
     /**

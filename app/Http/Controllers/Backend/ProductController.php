@@ -2,13 +2,25 @@
 
 namespace App\Http\Controllers\Backend;
 
+use App\Events\Products\ProductCreated;
+use App\Events\Products\ProductUpdated;
 use App\Http\Controllers\Controller;
-use App\Models\Product;
+use App\Http\Requests\Backend\Products\UpdateProductRequest;
+use App\Models\Product as Product;
 use App\Models\ProductCategory;
+use App\Services\ProductServices;
+use DB;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
+    protected $productServices;
+
+    public function __construct(ProductServices $productServices)
+    {
+        $this->productServices = $productServices;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -16,7 +28,7 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $products = Product::all();
+        $products = $this->productServices->getAllPaginated(5);
         return view('backend.inventory.product.index', compact('products'));
     }
 
@@ -46,14 +58,25 @@ class ProductController extends Controller
             'product_stock' => 'integer',
             'product_description' => 'sometimes',
         ]);
-        $product = Product::create([
-            'name' => $request->product_name,
-            'category_id' => $request->selected_category,
-            'price' => $request->product_price,
-            'quantity' => $request->product_stock,
-            'description' => $request->product_description,
-            'code' => $request->product_code,
-        ]);
+
+        DB::beginTransaction();
+        try {
+            $product = Product::create([
+                'name' => $request->product_name,
+                'category_id' => $request->selected_category,
+                'price' => $request->product_price,
+                'quantity' => $request->product_stock,
+                'description' => $request->product_description,
+                'code' => $request->product_code,
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->withFlashError($e->getMessage());
+        }
+        event(new ProductCreated($product));
+
+        DB::commit();
+
         return redirect()->route('admin.product.index')->withFlashSuccess('Product created successfully.');
     }
 
@@ -76,7 +99,8 @@ class ProductController extends Controller
      */
     public function edit(Product $product)
     {
-        //
+        $categories = ProductCategory::all(['name', 'id']);
+        return view('backend.inventory.product.edit', compact('product', 'categories'));
     }
 
     /**
@@ -86,9 +110,28 @@ class ProductController extends Controller
      * @param  \App\Models\Models\Product  $product
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Product $product)
+    public function update(UpdateProductRequest $request, Product $product)
     {
-        //
+        DB::beginTransaction();
+
+        try {
+            $product->update([
+                'name' => $request->product_name,
+                'category_id' => $request->selected_category,
+                'price' => $request->product_price,
+                'quantity' => $request->product_stock,
+                'description' => $request->product_description,
+                'code' => $request->product_code,
+            ]);
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return redirect()->back()->withFlashError($th->getMessage());
+        }
+
+        DB::commit();
+        event(new ProductUpdated($product));
+
+        return redirect()->route('admin.product.index')->withFlashSuccess('Product updated successfully.');
     }
 
     /**
@@ -99,6 +142,7 @@ class ProductController extends Controller
      */
     public function destroy(Product $product)
     {
-        //
+        $product->delete();
+        return redirect()->route('admin.product.index')->withFlashSuccess('Product deleted successfully.');
     }
 }

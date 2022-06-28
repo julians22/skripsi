@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Backend\ProductController;
 use App\Http\Controllers\Backend\ProductCategoryController;
+use App\Models\Product;
 use Tabuna\Breadcrumbs\Trail;
 
 //All route names prefixed with 'admin.'
@@ -14,11 +15,29 @@ Route::group(['prefix' => 'product', 'as' => 'product.'], function() {
         ->name('index');
     Route::get('/create', [ProductController::class, 'create'])
         ->breadcrumbs(function (Trail $trail) {
-            $trail->parent('admin.product.index')->push('Create Product', route('admin.product.create'));
+            $trail->parent('admin.product.index')->push(__('Create New Product'), route('admin.product.create'));
         })
         ->name('create');
     Route::post('/', [ProductController::class, 'store'])
         ->name('store');
+    Route::group(['prefix' => '{product}'], function() {
+        Route::get('/', [ProductController::class, 'show'])
+            ->breadcrumbs(function (Trail $trail, Product $product) {
+                $trail->parent('admin.product.index');
+                $trail->push($product->name, route('admin.product.show', $product));
+            })
+            ->name('show');
+        Route::get('/edit', [ProductController::class, 'edit'])
+            ->breadcrumbs(function (Trail $trail, Product $product) {
+                $trail->parent('admin.product.index');
+                $trail->push($product->name, route('admin.product.edit', $product));
+            })
+            ->name('edit');
+        Route::patch('/', [ProductController::class, 'update'])
+            ->name('update');
+        Route::delete('/', [ProductController::class, 'destroy'])
+            ->name('destroy');
+    });
 });
 
 Route::group(['prefix' => 'category', 'as' => 'category.'], function() {

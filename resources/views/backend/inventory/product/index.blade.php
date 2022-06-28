@@ -22,39 +22,7 @@
         @slot('body')
             <div class="row">
                 <div class="col-md-12">
-                    <table class="table table-sm table-bordered table-hover table-striped">
-                        <thead>
-                            <tr>
-                                <td>Code</td>
-                                <td>Name</td>
-                                <td>Price</td>
-                                <td>Stock Available</td>
-                                <td>Category</td>
-                                <td>Action</td>
-                            </tr>
-                        </thead>
-
-                        <tbody>
-                            @if ($products->count() > 0)
-                                @foreach ($products as $product)
-                                    <tr>
-                                        <td>{{ $product->code }}</td>
-                                        <td>{{ $product->name }}</td>
-                                        <td>{{ rupiah($product->price) }}</td>
-                                        <td>{{ $product->quantity }}</td>
-                                        <td>{{ $product->category->name ?? 'Not Categoried' }}</td>
-                                        <td></td>
-                                    </tr>
-                                @endforeach
-                            @else
-                                <tr>
-                                    <td colspan="6" class="text-center">
-                                        <strong>@lang('No Product Found')</strong>
-                                    </td>
-                                </tr>
-                            @endif
-                        </tbody>
-                    </table>
+                    <livewire:backend.inventory.product-table />
                 </div>
             </div>
         @endslot

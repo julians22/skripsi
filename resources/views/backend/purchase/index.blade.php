@@ -20,44 +20,7 @@
     @slot('body')
         <div class="row">
             <div class="col-md-12">
-                <table class="table table-bordered table-hover table-strip table-sm">
-                    <thead>
-                        <tr>
-                            <td>@lang('Supplier')</td>
-                            <td>@lang('Product')</td>
-                            <td>@lang('Price')</td>
-                            <td>@lang('Quantity')</td>
-                            <td>@lang('Created Date')</td>
-                            <td>@lang('Action')</td>
-                        </tr>
-                    </thead>
-
-                    @if ($purchases->count() > 0)
-                    <tbody>
-                        @foreach ($purchases as $purchase)
-                            <tr>
-                                <td>{{ $purchase->supplier->name }}</td>
-                                <td>{{ $purchase->product->name }}</td>
-                                <td>{{ $purchase->price }}</td>
-                                <td>{{ $purchase->quantity }}</td>
-                                <td>@displayDate($purchase->created_at, 'Y-M-d')</td>
-                                <td>
-                                    <a href="{{ route('admin.purchase.show', $purchase) }}"><i class="fas fa-eye"></i></a>
-                                </td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                    @else
-                    <tbody>
-                        <tr>
-                            <td colspan="6" class="text-center">
-                                <strong>@lang('No Purchase Found')</strong>
-                            </td>
-                        </tr>
-                    </tbody>
-                    @endif
-                </table>
-                {{ $purchases->links() }}
+                <livewire:backend.transaction.purchase-table />
             </div>
         </div>
     @endslot

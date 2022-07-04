@@ -20,33 +20,7 @@
     @slot('body')
         <div class="row">
             <div class="col-md-12">
-                <table class="table table-sm table-bordered table-hover table-striped">
-                    <thead>
-                        <tr>
-                            <td>Name</td>
-                            <td>Description</td>
-                            <td>Action</td>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                        @if ($categories->count() > 0)
-                            @foreach ($categories as $category)
-                                <tr>
-                                    <td>{{ $category->name }}</td>
-                                    <td>{{ Str::limit($category->description, 200, '...') }}</td>
-                                    <td></td>
-                                </tr>
-                            @endforeach
-                        @else
-                            <tr>
-                                <td colspan="6" class="text-center">
-                                    <strong>@lang('No Category Found')</strong>
-                                </td>
-                            </tr>
-                        @endif
-                    </tbody>
-                </table>
+                <livewire:backend.inventory.product-category-table />
             </div>
         </div>
     @endslot

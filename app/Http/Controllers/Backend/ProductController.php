@@ -28,8 +28,7 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $products = $this->productServices->getAllPaginated(5);
-        return view('backend.inventory.product.index', compact('products'));
+        return view('backend.inventory.product.index');
     }
 
     /**
@@ -88,7 +87,7 @@ class ProductController extends Controller
      */
     public function show(Product $product)
     {
-        //
+        return view('backend.inventory.product.show', compact('product'));
     }
 
     /**

@@ -9,6 +9,6 @@ trait BaseTableStyle{
      *
      */
     public function setTableClass(){
-        return 'table table-striped table-bordered table-hover table-sm';
+        return 'table table-hover table-sm';
     }
 }

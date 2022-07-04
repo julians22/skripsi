@@ -37,7 +37,7 @@
         "chart.js": "^3.8.0",
         "pinia": "^2.0.14",
         "vue-chartjs": "^4.1.1",
-        "vue-rangedate-picker": "^1.0.0",
+        "vue-rangedate-tools": "^1.0.1",
         "vue-select": "^3.18.3"
     }
 }

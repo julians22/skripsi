@@ -28,6 +28,7 @@
                                 <div class="row">
                                     <div class="col-8">
                                         <input type="number" class="form-control form-control-sm" id="amount" placeholder="Quantity" v-model="amount">
+                                        <small class="text-danger" ref="errorAmount"></small>
                                     </div>
                                     <div class="col-2">
                                         / <span v-text="selected_product.quantity"></span>
@@ -105,10 +106,10 @@
                             </div>
                         </div>
 
-                        <div class="row mt-4">
-                            <div class="col-md-12">
+                        <div class="row">
+                            <div class="col-md-12" v-if="subtotal > 0">
 
-                                <div class="form-group" v-if="subtotal > 0">
+                                <div class="form-group">
                                     <label for="discounts">Discount</label>
                                     <div class="row">
                                         <div class="col-md-5">
@@ -131,6 +132,10 @@
                                             </div>
                                         </div>
                                     </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="remarks">Catatan</label>
+                                    <textarea class="form-control" name="remarks" rows="3"></textarea>
                                 </div>
                                 <div v-if="subtotal > 0">
                                     <span class="text-bolder">Grand Total</span>
@@ -217,7 +222,14 @@ export default {
         addSelectedProduct: function() {
             let data_added_products = this.added_products;
             this.selected_product.total = Number(this.amount) * Number(this.selected_product.price);
-            if(this.selected_product && this.amount) {
+
+            if (this.amount > this.selected_product.quantity) {
+                this.$refs.errorAmount.innerText = 'Stok barang tidak mencukupi';
+                this.$refs.errorAmount.focus();
+                return;
+            }
+
+            if(this.selected_product && this.amount > 0) {
                 if (data_added_products.length > 0) {
                     let found = false;
                     for (let i = 0; i < data_added_products.length; i++) {
@@ -240,11 +252,16 @@ export default {
                 }
                 this.added_products = [];
             }else{
-                alert('Please select product and insert amount');
+                this.$refs.errorAmount.innerText = 'Jumlah barang tidak boleh kosong';
+                this.$refs.errorAmount.focus();
+
                 this.added_products = [];
+
+                return;
             }
             this.added_products = data_added_products;
             this.setSubtotal();
+            this.removeError();
 
             this.amount = 1;
         },
@@ -326,6 +343,10 @@ export default {
                 console.log(error);
                 // loading(false);
             });
+        },
+
+        removeError(){
+            this.$refs.errorAmount.innerText = '';
         },
     }
 }

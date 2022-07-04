@@ -1,11 +1,11 @@
 <template>
     <div>
-        <vue-date-picker @selected="datePickerEnvent" :captions="config.captions" :righttoleft="align === 'left' ? 'false' : 'true'" :presetRanges="config.presetRanges"></vue-date-picker>
+        <vue-date-picker @selected="datePickerEnvent" :init-range="initRange" :captions="config.captions" :righttoleft="align === 'left' ? 'false' : 'true'" :presetRanges="config.presetRanges"></vue-date-picker>
     </div>
 </template>
 
 <script>
-import { useStore, useReport } from "../../../../store";
+import { useReport } from "../../../../store";
 import { formatDate } from "../../../../utils/date";
 
 export default {
@@ -15,11 +15,25 @@ export default {
             default: 'left'
         },
     },
+    created(){
+        const report = useReport();
+        const dateRange = this.config.presetRanges.today().dateRange;
+        this.initRange.start = dateRange.start;
+        this.initRange.end = dateRange.end;
+
+        const start_date = formatDate(dateRange.start.toDateString());
+        const end_date = formatDate(dateRange.end.toDateString());
+        report.$patch({
+            start_date: start_date,
+            end_date: end_date,
+            isApply: true
+        });
+    },
     data(){
         return {
+            initRange: {},
             start_date: '',
             end_date: '',
-            store: useStore(),
             config: {
                 captions: {
                     'title': 'Pilih Tanggal',
@@ -85,12 +99,6 @@ export default {
                 },
                 format: 'dd-MM-yyyy',
             }
-        }
-    },
-    computed: {
-        counter(){
-            const counter = useStore()
-            return counter;
         }
     },
     methods: {

@@ -19,6 +19,9 @@ export const useReport = defineStore('report', {
             start_date: '',
             end_date: '',
             isApply: false,
+            report_type: '',
+            show_report: '',
+            products: ''
         }
     }
 });

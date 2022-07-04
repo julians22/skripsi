@@ -53,7 +53,7 @@ if (! function_exists('homeRoute')) {
 
 if (!function_exists('rupiah')) {
     /**
-     * Format the price.
+     * Format the price to rupiah.
      *
      * @param $price
      * @param int $decimals

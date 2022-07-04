@@ -9,6 +9,7 @@ use App\Models\Customer;
 use App\Models\Product;
 use App\Models\ProductCategory;
 use App\Models\Sales;
+use App\Models\Transaction;
 use App\Services\Transactions\SalesServices;
 use Barryvdh\DomPDF\Facade\Pdf;
 use DB;
@@ -85,6 +86,15 @@ class SalesController extends Controller
                     'quantity' => $product_model->quantity - $product['quantity'],
                 ]);
             }
+
+            if ($sales) {
+                $sales->transaction()->create([
+                    'total' => $sales->total,
+                    'status' => Transaction::STATUS_PENDING,
+                    'code' => 'PUR-' . Uuid::uuid4()->toString(),
+                ]);
+            }
+
         } catch (Exception $e) {
             DB::rollBack();
             throw new GeneralException(__('There was a problem creating your transaction.'.$e));
@@ -105,43 +115,10 @@ class SalesController extends Controller
         return view('backend.sales.show', compact('sales'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Sales  $sales
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Sales $sales)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Sales  $sales
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Sales $sales)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Sales  $sales
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Sales $sales)
-    {
-        //
-    }
-
     public function print(Sales $sales)
     {
-        $sales->with('customer', 'details');
+        $sales = $sales->with('customer', 'details')->find($sales->id);
+        // dd($sales);
         // return view('backend.utils.print.saless.out', compact('sales'));
         $pdf = Pdf::loadView('backend.utils.print.transactions.out', compact('sales'))->setPaper('a4', 'landscape')->setOptions(['dpi' => 90, 'defaultFont' => 'Source Sans Pro', 'isHtml5ParserEnabled' => true,
         'isRemoteEnabled' => true]);

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class SalesDetail extends Model
@@ -45,6 +46,15 @@ class SalesDetail extends Model
     {
         $unit_price = number_format((float)$this->unit_price, 2, '.', '');
         return $unit_price * $this->quantity;
+    }
 
+    /**
+     * Get the sales that owns the SalesDetail
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function sales(): BelongsTo
+    {
+        return $this->belongsTo(Sales::class, 'id', 'sales_id');
     }
 }

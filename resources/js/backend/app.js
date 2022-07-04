@@ -16,7 +16,7 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
 import Vue from 'vue';
 import vSelect from 'vue-select';
-import VueRangedatePicker from 'vue-rangedate-picker';
+import VueRangedatePicker from 'vue-rangedate-tools';
 import { createPinia, PiniaVuePlugin } from 'pinia'
 
 Vue.use(PiniaVuePlugin)
@@ -37,6 +37,8 @@ Vue.component('select-category', require('./components/Selects/Categories/Select
 Vue.component('select-date', require('./components/Forms/DatePicker/FilterDate.vue').default);
 
 Vue.component('chart-out', require('./components/Chart/OutChart.vue').default);
+
+Vue.component('report', require('./components/Reports/Page.vue').default);
 
 const app = new Vue({
     el: '#app',

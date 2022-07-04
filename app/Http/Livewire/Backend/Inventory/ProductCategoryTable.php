@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Http\Livewire\Backend;
+namespace App\Http\Livewire\Backend\Inventory;
 
 use App\Http\Livewire\BaseTableStyle;
+use App\Models\ProductCategory;
 use Illuminate\Database\Eloquent\Builder;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
-use App\Models\Customer;
 
-class CustomerTable extends DataTableComponent
+class ProductCategoryTable extends DataTableComponent
 {
 
     use BaseTableStyle;
@@ -16,19 +16,15 @@ class CustomerTable extends DataTableComponent
     public function columns(): array
     {
         return [
-            Column::make(__("Name"), "name")
-                ->sortable(),
-            Column::make(__("Phone"), "phone")
-                ->sortable(),
-            Column::make(__("E-mail"), "email")
-                ->sortable(),
-            Column::make(__("Actions"))
+            Column::make(__('Name'), 'name'),
+            Column::make(__('Description'), 'description'),
+            Column::make(__('Actions'), 'id')
         ];
     }
 
     public function query(): Builder
     {
-        return Customer::query();
+        return ProductCategory::query();
     }
 
     /**
@@ -38,6 +34,6 @@ class CustomerTable extends DataTableComponent
      */
     public function rowView(): string
     {
-        return 'backend.customer.includes.row';
+        return 'backend.inventory.category.includes.row';
     }
 }

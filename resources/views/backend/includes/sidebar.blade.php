@@ -32,6 +32,7 @@
 
             <li class="c-sidebar-nav-title">@lang('Transaction')</li>
 
+            {{-- sales menu --}}
             <li class="c-sidebar-nav-dropdown {{ activeClass(Route::is('admin.sales.*'), 'c-open c-show') }}">
                 <x-utils.link
                     href="#"
@@ -56,6 +57,7 @@
                     </ul>
             </li>
 
+            {{-- purchase menu --}}
             <li class="c-sidebar-nav-dropdown {{ activeClass(Route::is('admin.purchase.*'), 'c-open c-show') }}">
                 <x-utils.link
                     href="#"
@@ -78,6 +80,16 @@
                                 :text="__('Add Purchase')" />
                         </li>
                     </ul>
+            </li>
+
+            {{-- report menu --}}
+            <li class="c-sidebar-nav-item">
+                <x-utils.link
+                    class="c-sidebar-nav-link"
+                    :href="route('admin.report.index')"
+                    :active="activeClass(Route::is('admin.report*'), 'c-active')"
+                    icon="c-sidebar-nav-icon cil-bar-chart"
+                    :text="__('Report')" />
             </li>
 
 

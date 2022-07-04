@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\Backend\Inventory;
 
+use App\Http\Livewire\BaseTableStyle;
 use Illuminate\Database\Eloquent\Builder;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
@@ -9,6 +10,7 @@ use App\Models\Product;
 
 class ProductTable extends DataTableComponent
 {
+    use BaseTableStyle;
 
     /**
      * perPageAccepted property
@@ -36,14 +38,6 @@ class ProductTable extends DataTableComponent
     public function query(): Builder
     {
         return Product::query();
-    }
-
-    /**
-     * settableclass
-     *
-     */
-    public function setTableClass(){
-        return 'table table-striped table-bordered table-hover table-sm';
     }
 
     /**

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Backend\Customers\CreateCustomerRequest;
 use App\Http\Requests\Backend\Customers\UpdateCustomerRequest;
 use App\Models\Customer;
+use App\Models\Transaction;
 use Illuminate\Http\Request;
 
 class CustomerController extends Controller
@@ -17,8 +18,7 @@ class CustomerController extends Controller
      */
     public function index()
     {
-        $customers = Customer::all();
-        return view('backend.customer.index', compact('customers'));
+        return view('backend.customer.index');
     }
 
     /**
@@ -51,7 +51,18 @@ class CustomerController extends Controller
      */
     public function show(Customer $customer)
     {
-        //
+        $unpaidTransaction = 0;
+        $paidTransaction = 0;
+
+        foreach ($customer->sales as $sale) {
+            if ($sale->transaction->status === Transaction::STATUS_PENDING || !$sale->transaction->hasPayment()) {
+                $unpaidTransaction+= $sale->total;
+            } else {
+                $paidTransaction+= $sale->total;
+            }
+        }
+
+        return view('backend.customer.show', compact('customer', 'unpaidTransaction', 'paidTransaction'));
     }
 
     /**

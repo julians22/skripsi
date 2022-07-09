@@ -58,7 +58,8 @@ class PurchaseController extends Controller
         }else{
             $suplier = Supplier::find($request->suplier);
         }
-        $code = 'INV-P/' . date('Ymdhis') . '/'. $suplier->id .'/' . Uuid::uuid4()->toString();
+        $lastPurchase = Purchase::orderBy('id', 'desc')->first();
+        $code = 'INV-P/' . date('Ymd') . '/'. ($lastPurchase ? $lastPurchase->id + 1 : 1);
         $purchase = Purchase::create([
             'invoice_number' => $code,
             'supplier_id' => $suplier->id,

@@ -1,6 +1,7 @@
 <?php
 
 use Carbon\Carbon;
+use Faker\Core\Number;
 
 if (! function_exists('appName')) {
     /**
@@ -47,7 +48,7 @@ if (! function_exists('homeRoute')) {
             }
         }
 
-        return 'frontend.index';
+        return 'frontend.login';
     }
 }
 
@@ -65,4 +66,19 @@ if (!function_exists('rupiah')) {
         $value = "Rp. " . number_format($price, $decimals,',','.');
         return $value;
     }
+}
+
+if (!function_exists('clear_number')) {
+    /**
+     * Clear number from alphabet or character
+     *
+     * @param string $number
+     * @return int
+     */
+
+     function clear_number($number)
+     {
+        $number = preg_replace("/[^0-9]/", "", $number);
+        return (int) $number;
+     }
 }

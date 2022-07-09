@@ -1,114 +1,43 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>{{ appName() }}</title>
-        <meta name="description" content="@yield('meta_description', appName())">
-        <meta name="author" content="@yield('meta_author', 'Anthony Rappa')">
-        @yield('meta')
+@extends('frontend.layouts.app')
 
-        @stack('before-styles')
-        <link rel="dns-prefetch" href="//fonts.gstatic.com">
-        <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
-        <link href="{{ mix('css/frontend.css') }}" rel="stylesheet">
-        <style>
-            html, body {
-                background-color: #fff;
-                color: #636b6f;
-                font-family: 'Nunito', sans-serif;
-                font-weight: 200;
-                height: 100vh;
-                margin: 0;
-            }
+@section('title', __('Selamat Datang'))
 
-            .full-height {
-                height: 100vh;
-            }
+@section('content')
+@guest
+<div class="form-wrapper">
+    <x-forms.post :action="route('frontend.auth.login')">
+        <div class="form-style">
+            <input id="email" name="email" type="email" placeholder="@lang('E-mail Address')"  value="{{ old('email') }}" maxlength="255" required autofocus autocomplete="email" >
+            <span>@lang('E-mail Address')</span>
+        </div>
 
-            .flex-center {
-                align-items: center;
-                display: flex;
-                justify-content: center;
-            }
+        <div class="form-style">
+            <input type="password" name="password" id="password" placeholder="@lang('Password')" maxlength="100" required autocomplete="current-password" >
+            <span>@lang('Password')</span>
+        </div>
 
-            .position-ref {
-                position: relative;
-            }
+        <div class="form-group mb-0">
+            <button class="btn btn-primary" type="submit">@lang('Login')</button>
+            <x-utils.link :href="route('frontend.auth.password.request')" class="btn btn-link" :text="__('Forgot Your Password?')" />
+        </div><!--form-group-->
+    </x-forms.post>
+</div>
+@else
+    @if ($logged_in_user->isAdmin())
+        <x-utils.link
+            :href="route('admin.dashboard')"
+            :text="__('Dashboard')"
+            class="btn btn-success btn-block" />
+    @endif
+    <x-utils.link
+        :text="__('Logout')"
+        class="btn btn-danger btn-block mt-2"
+        onclick="event.preventDefault();document.getElementById('logout-form').submit();">
+    <x-slot name="text">
+        @lang('Logout')
+        <x-forms.post :action="route('frontend.auth.logout')" id="logout-form" class="d-none" />
+    </x-slot>
+</x-utils.link>
 
-            .top-right {
-                position: absolute;
-                right: 10px;
-                top: 18px;
-            }
-
-            .content {
-                text-align: center;
-            }
-
-            .title {
-                font-size: 84px;
-            }
-
-            .links > a {
-                color: #636b6f;
-                padding: 0 25px;
-                font-size: 13px;
-                font-weight: 600;
-                letter-spacing: .1rem;
-                text-decoration: none;
-                text-transform: uppercase;
-            }
-
-            .m-b-md {
-                margin-bottom: 30px;
-            }
-        </style>
-        @stack('after-styles')
-    </head>
-    <body>
-        @include('includes.partials.read-only')
-        @include('includes.partials.logged-in-as')
-        @include('includes.partials.announcements')
-
-        <div id="app" class="flex-center position-ref full-height">
-            <div class="top-right links">
-                @auth
-                    @if ($logged_in_user->isUser())
-                        <a href="{{ route('frontend.user.dashboard') }}">@lang('Dashboard')</a>
-                    @endif
-
-                    <a href="{{ route('frontend.user.account') }}">@lang('Account')</a>
-                @else
-                    <a href="{{ route('frontend.auth.login') }}">@lang('Login')</a>
-
-                    @if (config('boilerplate.access.user.registration'))
-                        <a href="{{ route('frontend.auth.register') }}">@lang('Register')</a>
-                    @endif
-                @endauth
-            </div><!--top-right-->
-
-            <div class="content">
-                @include('includes.partials.messages')
-
-                <div class="title m-b-md">
-                    <example-component></example-component>
-                </div><!--title-->
-
-                @auth
-                    @if ($logged_in_user->isAdmin())
-                        <div class="links">
-                            <a href="{{ route('admin.dashboard') }}">@lang('Go To Dashboard')</a>
-                        </div><!--links-->
-                    @endif
-                @endauth
-            </div><!--content-->
-        </div><!--app-->
-
-        @stack('before-scripts')
-        <script src="{{ mix('js/manifest.js') }}"></script>
-        <script src="{{ mix('js/vendor.js') }}"></script>
-        <script src="{{ mix('js/frontend.js') }}"></script>
-        @stack('after-scripts')
-    </body>
-</html>
+@endguest
+@endsection

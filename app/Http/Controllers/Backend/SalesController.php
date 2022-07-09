@@ -55,6 +55,17 @@ class SalesController extends Controller
     }
 
     /**
+     * Edit the specified resource.
+     *
+     * @param  Sales $sales
+     */
+    public function edit(Sales $sales){
+
+
+        return view('backend.sales.edit', compact('sales'));
+    }
+
+    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -62,8 +73,8 @@ class SalesController extends Controller
      */
     public function store(StoreSalesRequest $request)
     {
-        // dd($request->all());
-        $code = 'INV/' . date('Ymdhis') . '/'. $request->selected_customer .'/' . Uuid::uuid4()->toString();
+        $lastSale = $this->salesServices->takeLastRow();
+        $code = 'INV/' . date('Ymd') . '/' . ($lastSale ? $lastSale->id + 1 : 1);
         DB::beginTransaction();
         try {
             $sales = Sales::create([
@@ -91,7 +102,7 @@ class SalesController extends Controller
                 $sales->transaction()->create([
                     'total' => $sales->total,
                     'status' => Transaction::STATUS_PENDING,
-                    'code' => 'PUR-' . Uuid::uuid4()->toString(),
+                    'code' => 'P-' . $sales->invoice_number,
                 ]);
             }
 
@@ -100,7 +111,7 @@ class SalesController extends Controller
             throw new GeneralException(__('There was a problem creating your transaction.'.$e));
         }
         DB::commit();
-        return redirect()->route('admin.sales.index')->withFlashSuccess(__('Sales transaction successfully created.'));
+        return redirect()->route('admin.sales.show', $sales)->withFlashSuccess(__('Sales transaction successfully created.'));
     }
 
     /**
@@ -125,27 +136,65 @@ class SalesController extends Controller
         return $pdf->stream('invoice.pdf');
     }
 
-    public function payment(Request $request, Sales $sales)
+    public function storePayment(Request $request, Sales $sales)
     {
         $sales->with('customer', 'details', 'transaction');
 
         $transaction = $sales->transaction;
 
+        $request->merge(['payment' => clear_number($request->payment)]);
         if ($transaction->hasPayment()) {
             return redirect()->route('admin.sales.index')->withFlashDanger(__('This sales already has payment.'));
         }
 
         $payment = $transaction->payment()->create([
             'amount' => $request->payment,
-            'code' => 'PYMNT-'.$transaction->code
+            'code' => 'PAY-'.$transaction->code
         ]);
 
         if ($payment) {
-            $transaction->update([
-                'status' => 'paid',
-            ]);
+            if ($payment->amount == $transaction->total) {
+                $transaction->update([
+                    'status' => 'paid',
+                ]);
+            }
         }
 
         return redirect()->route('admin.sales.show', ['sales' => $sales])->withFlashSuccess(__('Payment transaction successfully created.'));
+    }
+
+    public function destroy(Request $request, Sales $sales)
+    {
+        $sales = $sales->with('details', 'transaction')->find($sales->id);
+        $salesDetails = $sales->details;
+        $salesTransaction = $sales->transaction;
+
+        DB::beginTransaction();
+
+        $salesTransaction->update([
+            'status' => Transaction::STATUS_CANCELED,
+        ]);
+
+        try {
+            foreach ($salesDetails as $detail) {
+                $product = Product::find($detail->product_id);
+                $product->update([
+                    'quantity' => $product->quantity + $detail->quantity,
+                ]);
+            }
+
+
+            if ($salesTransaction->hasPayment()) {
+                $salesTransaction->payment->delete();
+            }
+
+            $sales->delete();
+        } catch (Exception $e) {
+            DB::rollBack();
+            throw new GeneralException(__('There was a problem deleting your transaction.'.$e));
+        }
+
+        DB::commit();
+        return redirect()->route('admin.sales.index')->withFlashSuccess(__('Sales transaction successfully deleted.'));
     }
 }

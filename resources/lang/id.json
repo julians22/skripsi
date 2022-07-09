@@ -276,9 +276,10 @@
     "Insert Pay Amount": "Masukkan Jumlah Pembayaran",
     "Save": "Simpan",
     "Show": "Tampilkan",
-    "payment not found": "pembayaran tidak ditemukan",
     "Show Customer": "Tampilkan Pelanggan",
     "Show Supplier": "Tampilkan Pemasok",
     "Delete Customer": "Hapus Pelanggan",
-    "Delete Supplier": "Hapus Pemasok"
+    "Delete Supplier": "Hapus Pemasok",
+    "Full Payment": "Pembayaran Penuh",
+    "Report": "Laporan"
 }

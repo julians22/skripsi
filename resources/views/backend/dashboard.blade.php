@@ -9,9 +9,7 @@
         </x-slot>
 
         <x-slot name="body">
-            @lang('Welcome to the Dashboard')
-
-            <div class="row mt-4">
+            <div class="row">
                 <div class="col-md-4">
                     <x-utils.widget>
                         <x-slot name="header">
@@ -82,6 +80,14 @@
                     </x-utils.widget>
                 </div>
             </div>
+        </x-slot>
+    </x-backend.card>
+
+    <x-backend.card>
+        <x-slot name="body">
+            <full-calendar-component
+                :purchases='@json($contents['purchase_events'])'
+                :sales='@json($contents['sale_events'])'/>
         </x-slot>
     </x-backend.card>
 @endsection

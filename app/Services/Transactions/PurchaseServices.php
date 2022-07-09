@@ -34,4 +34,15 @@ class PurchaseServices extends BaseService
     {
         return $this->model::paginate($paginate);
     }
+
+    /**
+     * Get all purchases with defined column.
+     *
+     * @param array $columns
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function getForEvent()
+    {
+        return $this->model::with('supplier', 'transaction')->get();
+    }
 }

@@ -18,9 +18,9 @@ class PurchaseTable extends DataTableComponent
     public function columns(): array
     {
         return [
-            Column::make(__("Invoice Number"))
+            Column::make(__("Invoice Number"), 'invoice_number')
                 ->searchable(),
-            Column::make(__("Supplier"))
+            Column::make(__("Supplier"), 'supplier.name')
                 ->searchable(),
             Column::make(__("Status")),
             Column::make(__("Total"), "total")

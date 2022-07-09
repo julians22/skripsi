@@ -1,10 +1,10 @@
 <div class="c-sidebar c-sidebar-dark c-sidebar-fixed c-sidebar-lg-show" id="sidebar">
     <div class="c-sidebar-brand d-lg-down-none">
         <div class="c-sidebar-brand-full">
-            <img src="{{ asset('img/brand/logo.jpeg') }}" alt="Arpan Electric" width="166" height="89">
+            <img src="{{ asset('img/brand/logo_white.png') }}" alt="Arpan Electric" style="margin: .5rem;" width="145" height="77">
         </div>
         <div class="c-sidebar-brand-minimized">
-            <span>AE</span>
+            <img src="{{ asset('img/brand/mini_white.png') }}" alt="" width="45px">
         </div>
     </div><!--c-sidebar-brand-->
 

@@ -7,10 +7,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Sales extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     /**
      * The accessors to append to the model's array form.
@@ -30,7 +31,10 @@ class Sales extends Model
      * Get the status label of the Sales
      */
     public function getStatusLabelAttribute(){
-        return $this->transaction->status;
+        if ($this->hasTransaction()) {
+            return $this->transaction->status;
+        }
+        return 'draft';
     }
 
     /**
@@ -92,7 +96,7 @@ class Sales extends Model
             return $this->total - $this->discount;
         }
 
-        return $this->total;
+        return clear_number($this->total);
     }
 
     /**
@@ -112,5 +116,15 @@ class Sales extends Model
     public function transaction()
     {
         return $this->morphOne(Transaction::class, 'typeable');
+    }
+
+    /**
+     * Check if the sales has transaction.
+     *
+     * @return bool
+     */
+    public function hasTransaction(): bool
+    {
+        return $this->transaction()->exists();
     }
 }

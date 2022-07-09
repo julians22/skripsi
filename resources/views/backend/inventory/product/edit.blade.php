@@ -40,7 +40,7 @@
             <div class="form-group row">
                 <label for="product_price" class="col-form-label col-md-2">@lang('Price')</label>
                 <div class="col-md-10">
-                    <input type="number" name="product_price" id="product_price" class="form-control" placeholder="@lang('Price')" required value="{{ $product->price }}">
+                    <input-number-component form-name="product_price" form-value="{{ $product->price }}" placeholder="@lang('Price')"></input-number-component>
                 </div>
             </div>
             <div class="form-group row">

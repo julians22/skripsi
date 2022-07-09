@@ -9,6 +9,10 @@
 
 @import './components/widget.scss';
 
+// @import '~tippy.js/themes/light.css';
+@import '~tippy.js/themes/translucent.css';
+@import '~tippy.js/animations/scale.css';
+
 $indigo: #6574cd;
 $orange: #f6993f;
 $black: #212529;

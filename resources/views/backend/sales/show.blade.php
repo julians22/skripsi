@@ -117,10 +117,19 @@
                         </tr>
                     </table>
                 @else
-                    <div class="alert alert-warning">
-                        @lang('No payment found for this transaction.')
-                        <a data-toggle="modal" data-target="#paymentModal" href="#" class="btn btn-sm btn-light">@lang('Add Payment')</a>
-                    </div>
+                    <form method="POST" action="{{ route('admin.sales.payment.store', ['sales' => $sales]) }}">
+                        @csrf
+                        <create-payment-component
+                            grand-total="{{ $sales->grand_total }}"
+                            grand-total-label="{{ rupiah($sales->grand_total) }}"
+                            alert-message="@lang('No payment found for this transaction.')"
+                            add-btn-text="@lang('Add Payment')"
+                            save-btn-text="@lang("Save")"
+                            total-label-text="@lang('Total Price')"
+                            full-payment-label="@lang('Full Payment')"
+                            pay-amount-label="@lang('Pay Amount')"
+                            />
+                    </form>
                 @endif
             </div>
         </div>
@@ -128,49 +137,3 @@
 </x-backend.card>
 @endsection
 
-@push('before-scripts')
-<form method="POST" action="{{ route('admin.sales.payment', ['sales' => $sales]) }}">
-    @csrf
-    <div class="modal fade" id="paymentModal" tabindex="-1" role="dialog" aria-labelledby="paymentModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="paymentModalLabel">
-                        @lang('Add Payment')
-                        <span class="badge badge-pill badge-info">{{ $sales->invoice_number }}</span>
-                    </h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="row mb-2">
-                        <div class="col-md-4">
-                            @lang('Total Price')
-                        </div>
-                        <div class="col-md-8">
-                            <strong>
-                                {{ rupiah($sales->grand_total) }}
-                            </strong>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="payment" class="col-form-label">@lang('Pay Amount')</label>
-                        {{-- create input group --}}
-                        <div class="input-group">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text">Rp</span>
-                            </div>
-                            <input type="text" class="form-control" name="payment" id="payment" placeholder="@lang('Insert Pay Amount')">
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">@lang("Save")</button>
-                </div>
-            </div>
-        </div>
-  </div>
-</form>
-@endpush

@@ -38,9 +38,16 @@ Vue.component('select-date', require('./components/Forms/DatePicker/FilterDate.v
 
 Vue.component('chart-out', require('./components/Chart/OutChart.vue').default);
 
+Vue.component('full-calendar-component', require('./components/Calendar/FullCalendar.vue').default);
+
+Vue.component('create-payment-component', require('./components/Forms/Payments/CreatePayment.vue').default);
+Vue.component('input-number-component', require('./components/Forms/InputNumber.vue').default);
+
 Vue.component('report', require('./components/Reports/Page.vue').default);
 
 const app = new Vue({
     el: '#app',
     pinia
 });
+
+window.vueApp = app;

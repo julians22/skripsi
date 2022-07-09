@@ -1,4 +1,5 @@
-<div class="card">
+@props(['type' => 'default'])
+<div {{ $attributes->merge(['class' => 'card card-'.$type]) }}>
     @if (isset($header))
         <div class="card-header">
             {{ $header }}

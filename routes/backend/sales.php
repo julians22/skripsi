@@ -36,10 +36,16 @@ Route::group(['prefix' => 'sales', 'as' => 'sales.'], function() {
                 $trail->push(__('Edit Sales'), route('admin.sales.edit', $sales));
             })
             ->name('edit');
+
         Route::get('print', [SalesController::class, 'print'])
             ->name('print');
 
-        Route::post('payment', [SalesController::class, 'payment'])
-            ->name('payment');
+        Route::delete('/', [SalesController::class, 'destroy'])
+            ->name('destroy');
+
+        Route::group(['prefix' => 'payment', 'as' => 'payment.'], function() {
+            Route::post('/', [SalesController::class, 'storePayment'])
+                ->name('store');
+        });
     });
 });

@@ -28,7 +28,7 @@ class UpdateProductRequest extends FormRequest
             "product_code" => "unique:products,code,".$this->product_id ,
             "selected_category" => "required|numeric",
             "product_description" => "sometimes|string",
-            "product_price" => "numeric",
+            "product_price" => "required",
             "product_stock" => "numeric"
         ];
     }

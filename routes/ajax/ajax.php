@@ -13,4 +13,8 @@ Route::get('getCategories', [CategoryStateController::class, 'getCategories']);
 
 Route::get('getSales', [SalesStateController::class, 'getSales']);
 
-Route::get('reports', [ReportController::class, 'report']);
+Route::group(['prefix' => 'reports', 'as' => 'reports.'], function() {
+    Route::get('sales', [ReportController::class, 'salesReport'])
+        ->name('sales');
+
+});

@@ -52,6 +52,12 @@
                             <h6 class="card-subtitle mb-2 text-muted">{{ extarctMoney(total_sales) }}</h6>
                         </div>
                     </div>
+                    <div class="card" v-if="sale_average">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ average_label }} </h5>
+                            <h6 class="card-subtitle mb-2 text-muted">{{ extarctMoney(sale_average) }}</h6>
+                        </div>
+                    </div>
                     <div class="card">
                         <div class="card-body">
                             <h5 class="card-title">Jumlah Transaksi</h5>
@@ -94,7 +100,7 @@
 </template>
 
 <script>
-import { useStore, useReport } from "../../../store";
+import { useReport } from "../../../store";
 
 import { Bar, Line as LineChartGen } from 'vue-chartjs/legacy'
 import {
@@ -119,6 +125,8 @@ ChartJS.register(
 )
 
 import { rupiah } from "../../../utils/money";
+
+import MonthPicker from "../Forms/DatePicker/MonthPickerComponent.vue";
 
 export default {
     props: {
@@ -155,6 +163,8 @@ export default {
             total_sales: 0,
             total_transaction: 0,
             total_product: 0,
+            sale_average: 0,
+            average_label: '',
             chartIsValid: false,
             isLoading: false,
             message: 'Silahkan klik tombol kirim untuk mengambil data',
@@ -191,7 +201,7 @@ export default {
                 responsive: true,
                 interaction: {
                     mode: 'index',
-                    intersect: false,
+                    intersect: true,
                 },
                 stacked: false,
                 scales: {
@@ -223,7 +233,7 @@ export default {
             },
         }
     },
-    components: { Bar, LineChartGen },
+    components: { Bar, LineChartGen, MonthPicker },
     mounted(){
         this.storeReport.report_type = this.report_type;
         this.storeReport.show_report = this.show_report;
@@ -254,7 +264,7 @@ export default {
 
             let config = {
                 method: 'GET',
-                url: '/ajax/reports/',
+                url: '/ajax/reports/sales',
                 params: data,
                 headers: {
                     'Content-Type': 'application/json'
@@ -301,6 +311,8 @@ export default {
                 this.total_transaction += data.total[key];
                 this.total_product += data.product[key];
             }
+            this.sale_average = data.average;
+            this.average_label = data.average_label;
         },
         clearData(){
             this.chartData.labels = [];
@@ -311,6 +323,7 @@ export default {
             this.total_sales = 0;
             this.total_transaction = 0;
             this.total_product = 0;
+            this.sale_average = 0;
         },
         extarctMoney(val){
             return rupiah(val);

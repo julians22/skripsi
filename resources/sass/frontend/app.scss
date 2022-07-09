@@ -6,3 +6,78 @@
 
 // Bootstrap
 @import '~bootstrap/scss/bootstrap';
+
+body{
+    .main-wrapper{
+        height: 100vh;
+        display: flex;
+        .bg{
+            background-position: center;
+            background-size: cover;
+            background-image: url('/img/bg1.jpg');
+            width: 70%;
+            position: relative;
+
+            .footer{
+                position: absolute;
+                bottom: 25px;
+                left: 25px;
+                width: 100%;
+            }
+        }
+        .content{
+            border-top: 4px solid rgb(11, 12, 43);
+            width: 30%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding-left: 10px;
+            padding-right: 10px;
+        }
+    }
+}
+
+.form-wrapper{
+    width: 100%;
+
+    .form-style{
+        position: relative;
+        display: block;
+
+        input{
+            box-sizing: border-box;
+            display: block;
+            padding: 20px;
+            width: 100%;
+            margin-bottom: 10px;
+            transition: all 0.2s ease-in-out;
+
+            &::placeholder {
+                transition: all 0.2s ease-in-out;
+                color: #999;
+            }
+
+            &:focus, &.populated {
+                padding-top: 28px;
+                padding-bottom: 12px;
+
+                &::placeholder {
+                    color: transparent;
+                }
+
+                & + span {
+                    opacity: 1;
+                    top: 10px;
+                }
+            }
+        }
+        span {
+            position: absolute;
+            top: 0px;
+            left: 20px;
+            opacity: 0;
+            transition: all 0.2s ease-in-out;
+        }
+    }
+}

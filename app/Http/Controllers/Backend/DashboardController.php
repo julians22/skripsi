@@ -66,6 +66,9 @@ class DashboardController
             $purchasingToday += $purchase->total;
         }
 
+        $saleEvents = $this->salesServices->getForEvent();
+        $purchaseEvents = $this->purchaseServices->getForEvent();
+
         $contents = [
             'selling_this_month' => number_format($sellingThisMonth, 0, ',', '.'),
             'selling_last_month' => number_format($sellingLastMonth, 0, ',', '.'),
@@ -73,6 +76,8 @@ class DashboardController
             'purchasing_this_month' => number_format($purchasingThisMonth, 0, ',', '.'),
             'purchasing_last_month' => number_format($purchasingLastMonth, 0, ',', '.'),
             'purchasing_today' => number_format($purchasingToday, 0, ',', '.'),
+            'sale_events' => $saleEvents,
+            'purchase_events' => $purchaseEvents,
         ];
 
         return view('backend.dashboard', compact('contents'));

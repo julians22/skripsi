@@ -24,9 +24,11 @@
             </span>
         @endif
     @else
-        <span class="badge badge-danger">
-            @lang('payment not found')
-        </span>
+        @if ($row->status_label == 'pending')
+            <span class="badge badge-info">
+                {{ __($row->status_label) }}
+            </span>
+        @endif
     @endif
 </x-livewire-tables::bs4.table.cell>
 
@@ -42,4 +44,5 @@
 <x-livewire-tables::bs4.table.cell>
     <a target="_blank" data-toggle="tooltip" data-placement="top" title="@lang('Print Invoice')" class="btn btn-sm m-0 btn-primary p-px" href="{{ route('admin.sales.print', ['sales' => $row]) }}"><i class="fas fa-print"></i></a>
     <a data-toggle="tooltip" data-placement="top" title="@lang('Show Sales')" class="btn btn-sm m-0 btn-success p-px" href="{{ route('admin.sales.show', ['sales' => $row]) }}"><i class="fas fa-eye"></i></a>
+    <x-utils.delete-button text="" :href="route('admin.sales.destroy', $row)" />
 </x-livewire-tables::bs4.table.cell>

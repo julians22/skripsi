@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Validator;
 
 class ReportController extends Controller
 {
-    public function report(Request $request)
+    public function salesReport(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'start_date' => 'required|date',
@@ -48,6 +48,8 @@ class ReportController extends Controller
         ];
 
         // make sales data
+        $datasets['data']['total_sale'] = 0;
+        $datasets['data']['average'] = 0;
         foreach ($labels as $label) {
             // convert Month to number
             $condition = $label;
@@ -57,13 +59,15 @@ class ReportController extends Controller
             $datasets['data']['product'][$condition] = 0;
             // group sales by month or day
             foreach ($sales as $sale) {
+                // increase total sales
                 if ($show_report == 'monthly') {
-                    if (date('M', strtotime($sale->created_at)) === $condition) {
+                    if (date('M', strtotime($sale->created_at)) == $condition) {
                         // increase sales in same condition
                         $datasets['data']['sales'][$condition] += $sale->total;
                         // increase sales by 1
                         $datasets['data']['total'][$condition] += 1;
 
+                        $datasets['data']['total_sale'] += $sale->total;
                         // sale detail
                         $details = $sale->details;
                         foreach ($details as $detail) {
@@ -71,7 +75,8 @@ class ReportController extends Controller
                         }
                     }
                 }else{
-                    if (date('d-M', strtotime($sale->created_at)) === $condition) {
+                    if (date('d-M', strtotime($sale->created_at)) == $condition) {
+                        // dd(date('d-M', strtotime($sale->created_at)), $condition);
                         // increase sales in same day
                         $datasets['data']['sales'][$condition] += $sale->total;
 
@@ -82,11 +87,22 @@ class ReportController extends Controller
                         $details = $sale->details;
                         foreach ($details as $detail) {
                             $datasets['data']['product'][$condition] += $detail->quantity;
+                            $total_sale = $detail->unit_price * $detail->quantity;
+                            $datasets['data']['total_sale'] += $total_sale;
                         }
                     }
                 }
             }
         }
+        $average = $datasets['data']['total_sale'] / count($labels);
+        $datasets['data']['average'] = round($average, 0);
+
+        if ($show_report == 'monthly') {
+            $datasets['data']['average_label'] = 'Rata-rata penjualan Bulanan';
+        }else{
+            $datasets['data']['average_label'] = 'Rata-rata penjualan Harian';
+        }
+
         if (isset($datasets['data']) && count($datasets['data']) > 0) {
             $message = 'Laporan berhasil dibuat';
             $status = 'success';
@@ -108,7 +124,11 @@ class ReportController extends Controller
         $start_date = date($start_date);
         $end_date = date($end_date);
 
-        $sales = Sales::whereBetween('created_at', [$start_date, $end_date])->get();
+        $sales = Sales::whereHas('transaction', function ($query) {
+                $query->where('status', 'paid');
+            })
+            ->whereBetween('created_at', [$start_date, $end_date])
+            ->get();
         return $sales;
     }
 
@@ -117,10 +137,14 @@ class ReportController extends Controller
         $start_date = date($start_date);
         $end_date = date($end_date);
 
-        $sales = Sales::whereHas('details', function ($query) use ($start_date, $end_date, $product) {
-            $query->where('product_id', $product)
-                ->whereBetween('created_at', [$start_date, $end_date]);
-        })->get();
+        $sales = Sales::whereHas('transaction', function ($query) {
+            return $query->where('status', 'paid');
+        })
+        ->whereHas('details', function ($query) use ($product) {
+            return $query->where('product_id', $product);
+        })
+        ->whereBetween('created_at', [$start_date, $end_date])
+        ->get();
 
         return $sales;
     }
@@ -141,7 +165,7 @@ class ReportController extends Controller
             $end_date = strtotime($end_date);
             $diff = $end_date - $start_date;
             $days = $diff / (60 * 60 * 24);
-            for ($i = 0; $i < $days; $i++) {
+            for ($i = 0; $i <= $days; $i++) {
                 $labels[] = date('d-M', strtotime("+$i day", $start_date));
             }
         } else {
@@ -149,7 +173,7 @@ class ReportController extends Controller
             $end_date = strtotime($end_date);
             $diff = $end_date - $start_date;
             $months = $diff / (60 * 60 * 24 * 30);
-            for ($i = 0; $i < $months; $i++) {
+            for ($i = 0; $i <= $months; $i++) {
                 $labels[] = date('M', strtotime("+$i month", $start_date));
             }
         }

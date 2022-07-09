@@ -21,7 +21,8 @@ export const useReport = defineStore('report', {
             isApply: false,
             report_type: '',
             show_report: '',
-            products: ''
+            products: '',
+            month_selected: '',
         }
     }
 });

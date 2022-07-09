@@ -53,7 +53,7 @@ class ProductController extends Controller
         $request->validate([
             'product_name' => 'required',
             'selected_category' => 'sometimes',
-            'product_price' => 'integer',
+            'product_price' => 'required',
             'product_stock' => 'integer',
             'product_description' => 'sometimes',
         ]);
@@ -114,6 +114,8 @@ class ProductController extends Controller
         DB::beginTransaction();
 
         try {
+            // remove dot, comma and space from price
+            $request->merge(['product_price' => clear_number($request->product_price)]);
             $product->update([
                 'name' => $request->product_name,
                 'category_id' => $request->selected_category,

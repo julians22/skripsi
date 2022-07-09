@@ -22,11 +22,19 @@
     @include('includes.partials.announcements')
 
     <div id="app">
-        @include('frontend.includes.nav')
-        @include('includes.partials.messages')
+        {{-- @include('frontend.includes.nav') --}}
 
-        <main>
-            @yield('content')
+        <main class="main-wrapper">
+
+            <div class="bg">
+                <div class="footer">
+                    <img src="{{ asset('img/brand/logo_white.png') }}" alt="Arpan Electric" width="150">
+                </div>
+            </div>
+            <div class="content">
+                @include('includes.partials.messages')
+                @yield('content')
+            </div>
         </main>
     </div><!--app-->
 

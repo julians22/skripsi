@@ -46,6 +46,8 @@ Route::group(['prefix' => 'sales', 'as' => 'sales.'], function() {
         Route::group(['prefix' => 'payment', 'as' => 'payment.'], function() {
             Route::post('/', [SalesController::class, 'storePayment'])
                 ->name('store');
+            Route::post('/update', [SalesController::class, 'updatePayment'])
+                ->name('update');
         });
     });
 });

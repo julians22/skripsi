@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="form-group row">
-            <label for="customer" class="col-md-2 col-form-label">Select Customer</label>
+            <label for="customer" class="col-md-2 col-form-label">{{ selectLabel }}</label>
             <div class="col-md-10">
                 <input type="hidden" name="selected_customer" v-bind:value="getCustomerId(selected_customer)">
                 <v-select label="name" v-model="selected_customer" :options="customers" @search="onSearch" @deselected="selected_customer = null"></v-select>
@@ -21,7 +21,11 @@ export default {
     props: {
         customers_model: {
             type: Array,
-        }
+        },
+        selectLabel: {
+            type: String,
+            default: 'Select Customer',
+        },
     },
     components: {
         InputCustomer

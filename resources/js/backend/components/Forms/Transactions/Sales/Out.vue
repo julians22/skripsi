@@ -1,6 +1,11 @@
 <template>
     <div>
         <div class="row">
+            <div class="col-md-12">
+                <slot name="select_customer"></slot>
+            </div>
+        </div>
+        <div class="row">
             <div class="col-md-5">
                 <div class="card">
                     <div class="card-body">
@@ -19,10 +24,22 @@
                                 placeholder="Select Product"
                                 @search="onSearch"
                                 @deselected="selected_product = null"
+                                @option:selected="selectedOption"
                                 >
+                                <template v-slot:option="product">
+                                    {{product.name}} || {{product.code}}
+                                </template>
                             </v-select>
                         </div>
                         <div v-if="selected_product">
+                            <div class="form-group">
+                                <label for="amount">Harga</label>
+                                <div class="row">
+                                    <div class="col-8">
+                                        <input type="number" class="form-control form-control-sm" id="harga" placeholder="Harga" v-model="price">
+                                    </div>
+                                </div>
+                            </div>
                             <div class="form-group">
                                 <label for="amount">Amount</label>
                                 <div class="row">
@@ -45,11 +62,6 @@
             <div class="col-md-7">
                 <div class="card">
                     <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <slot name="select_customer"></slot>
-                            </div>
-                        </div>
                         <div class="row mt-4">
                             <div class="col-md-12">
                                 <div class="table-responsive">
@@ -58,9 +70,9 @@
                                             <tr>
                                                 <th></th>
                                                 <th>Product</th>
-                                                <th>@</th>
-                                                <th>Price</th>
-                                                <th>Total</th>
+                                                <th>Qty</th>
+                                                <th>Harga Satuan</th>
+                                                <th>Jumlah</th>
                                             </tr>
                                         </thead>
                                         <tbody v-if="added_products.length > 0">
@@ -70,27 +82,27 @@
                                                         <i class="fa fa-trash"></i>
                                                     </button>
                                                 </td>
-                                                <td  width="100%">
+                                                <td  width="180px">
                                                     {{ add_product.name }}
-                                                    <input type="hidden" :name="`products[${index}][product_id]`" :value=" add_product.id">
+                                                    <input type="hidden" :name="`products[${index}][product_id]`" :value="add_product.id">
                                                 </td>
                                                 <td>
                                                     {{ add_product.amount }}
-                                                    <input type="hidden" :name="`products[${index}][quantity]`" :value=" add_product.amount">
+                                                    <input type="hidden" :name="`products[${index}][quantity]`" :value="add_product.amount">
                                                 </td>
                                                 <td>
-                                                    <input type="hidden" :name="`products[${index}][price]`" :value=" add_product.price">
-                                                    {{ add_product.price }}
+                                                    <input type="hidden" :name="`products[${index}][price]`" :value="add_product.price">
+                                                    {{ extarctMoney(parseInt(add_product.price)) }}
                                                 </td>
                                                 <td>
-                                                    {{ total(add_product.total) }}
+                                                    {{ extarctMoney(total(add_product.total)) }}
                                                 </td>
                                             </tr>
                                             <tr class="bg-dark">
                                                 <th colspan="4">Subtotal</th>
                                                 <td>
                                                     <input type="hidden" name="total" :value="subtotal">
-                                                    <span v-text="subtotal">
+                                                    <span v-text="extarctMoney(parseInt(subtotal))">
                                                     </span>
                                                 </td>
                                             </tr>
@@ -137,9 +149,9 @@
                                     <label for="remarks">Catatan</label>
                                     <textarea class="form-control" name="remarks" rows="3"></textarea>
                                 </div>
-                                <div v-if="subtotal > 0">
+                                <div v-if="subtotal != 0">
                                     <span class="text-bolder">Grand Total</span>
-                                    <span v-text="grand_total"></span>
+                                    <span v-text="extarctMoney(grand_total)"></span>
                                 </div>
                             </div>
                         </div>
@@ -153,6 +165,8 @@
 
 <script>
 import TableRow from './Table/Row.vue'
+
+import {rupiah} from '../../../../../utils/money.js'
 
 export default {
     props: {
@@ -173,6 +187,7 @@ export default {
             selected_product: null,
             added_products: [],
             amount: 1,
+            price: 0,
             // grand_total: 0,
             subtotal: 0,
             discount: {
@@ -198,7 +213,7 @@ export default {
     computed: {
         grand_total(){
             const total = this.subtotal - this.discount.price
-            return Number(total).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            return Number(total);
         },
         categories(){
             const categories_model = this.categories_model;
@@ -219,17 +234,27 @@ export default {
         this.products = this.products_model;
     },
     methods: {
+        selectedOption: function (selected){
+            this.price = Number(selected.price);
+            this.sele
+        },
         addSelectedProduct: function() {
             let data_added_products = this.added_products;
-            this.selected_product.total = Number(this.amount) * Number(this.selected_product.price);
+            this.selected_product.total = Number(this.amount) * Number(this.price);
+            this.selected_product.price = Number(this.price);
 
             if (this.amount > this.selected_product.quantity) {
                 this.$refs.errorAmount.innerText = 'Stok barang tidak mencukupi';
                 this.$refs.errorAmount.focus();
                 return;
             }
+            if (this.selected_product.price < 1) {
+                this.$refs.errorAmount.innerText = 'Harga produk belum sesuai harap sesuaikan di halaman produk';
+                this.$refs.errorAmount.focus();
+                return;
+            }
 
-            if(this.selected_product && this.amount > 0) {
+            if(this.selected_product && this.amount > 0 && this.price > 0) {
                 if (data_added_products.length > 0) {
                     let found = false;
                     for (let i = 0; i < data_added_products.length; i++) {
@@ -237,7 +262,7 @@ export default {
                             found = true;
                             let amount = Number(data_added_products[i].amount) + Number(this.amount);
                             data_added_products[i].amount = Number(amount);
-                            data_added_products[i].total = Number(data_added_products[i].amount) * Number(data_added_products[i].price);
+                            data_added_products[i].total = Number(data_added_products[i].amount) * Number(this.price);
                         }
                     }
                     if (!found) {
@@ -273,7 +298,7 @@ export default {
             }
         },
         total(total) {
-            return Number(total).toFixed(2);
+            return parseInt(total);
         },
         search: _.debounce((loading, search, vm) => {
             axios.get('/ajax/getProducts', {
@@ -348,6 +373,9 @@ export default {
         removeError(){
             this.$refs.errorAmount.innerText = '';
         },
+        extarctMoney(val){
+            return rupiah(val);
+        }
     }
 }
 </script>

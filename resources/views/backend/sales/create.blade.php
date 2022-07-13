@@ -21,7 +21,7 @@
         @slot('body')
             <transaction-out :categories_model='@json($categories ?? [])' :products_model='@json($products ?? [])' :old_selected_products='@json(old('products'))'>
                 <template v-slot:select_customer>
-                    <select-customer :customers_model='@json($customers ?? [])'></select-customer>
+                    <select-customer select-label="@lang('Select Customer')" :customers_model='@json($customers ?? [])'></select-customer>
                 </template>
             </transaction-out>
         @endslot

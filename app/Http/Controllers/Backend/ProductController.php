@@ -130,7 +130,7 @@ class ProductController extends Controller
         }
 
         DB::commit();
-        event(new ProductUpdated($product));
+        // event(new ProductUpdated($product));
 
         return redirect()->route('admin.product.index')->withFlashSuccess('Product updated successfully.');
     }
@@ -145,5 +145,15 @@ class ProductController extends Controller
     {
         $product->delete();
         return redirect()->route('admin.product.index')->withFlashSuccess('Product deleted successfully.');
+    }
+
+    /**
+     *  Show the form for import product.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function import()
+    {
+        return view('backend.inventory.product.import');
     }
 }

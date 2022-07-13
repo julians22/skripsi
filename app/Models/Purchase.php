@@ -26,7 +26,7 @@ class Purchase extends Model
      *
      * @var array
      */
-    protected $appends = ['status_label'];
+    protected $appends = ['status_label', 'grand_total'];
 
     /**
      * Get the status label of the Sales
@@ -104,11 +104,27 @@ class Purchase extends Model
         });
     }
 
+    //get grand total
+    public function getGrandTotalAttribute()
+    {
+        return clear_number($this->total);
+    }
+
     /**
      * Get the transaction.
      */
     public function transaction()
     {
         return $this->morphOne(Transaction::class, 'typeable');
+    }
+
+     /**
+     * Check if the sales has transaction.
+     *
+     * @return bool
+     */
+    public function hasTransaction(): bool
+    {
+        return $this->transaction()->exists();
     }
 }

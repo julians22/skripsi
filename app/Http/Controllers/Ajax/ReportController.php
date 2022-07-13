@@ -3,18 +3,20 @@
 namespace App\Http\Controllers\Ajax;
 
 use App\Http\Controllers\Controller;
+use App\Models\Purchase;
 use App\Models\Sales;
+use DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
 class ReportController extends Controller
 {
-    public function salesReport(Request $request)
+    public function report(Request $request, $trans = 'sales')
     {
         $validator = Validator::make($request->all(), [
             'start_date' => 'required|date',
             'end_date' => 'required|date',
-            'report_type' => 'required|in:sales,product',
+            'report_type' => 'required|in:invoice,product',
             'show_report' => 'required|in:monthly,daily',
             'product' => 'sometimes|required_if:report_type,product',
         ]);
@@ -34,73 +36,75 @@ class ReportController extends Controller
         $product = $request->product;
 
 
-        if ($report_type == 'sales'){
-            $sales = $this->getSales($start_date, $end_date);
-        }else{
-            $sales = $this->getProduct($start_date, $end_date, $product);
-        }
-
         $labels = $this->makeLabels($show_report, $start_date, $end_date);
 
         $datasets = [
-            'label' => 'Sales',
             'data' => []
         ];
 
         // make sales data
-        $datasets['data']['total_sale'] = 0;
+        $datasets['data']['total_'.$trans] = 0;
         $datasets['data']['average'] = 0;
+
+        if ($report_type == 'invoice'){
+            $transactions = $this->getTrans($start_date, $end_date, $trans);
+
+        }else{
+            $transactions = $this->getProduct($start_date, $end_date, $product, $trans);
+        }
+
         foreach ($labels as $label) {
             // convert Month to number
             $condition = $label;
-
-            $datasets['data']['sales'][$condition] = 0;
+            $datasets['data'][$trans][$condition] = 0;
             $datasets['data']['total'][$condition] = 0;
             $datasets['data']['product'][$condition] = 0;
-            // group sales by month or day
-            foreach ($sales as $sale) {
-                // increase total sales
+            // group transaction by month or day
+            foreach ($transactions as $transaction) {
+                // increase total transaction
                 if ($show_report == 'monthly') {
-                    if (date('M', strtotime($sale->created_at)) == $condition) {
+                    if (date('M', strtotime($transaction->created_at)) == $condition) {
                         // increase sales in same condition
-                        $datasets['data']['sales'][$condition] += $sale->total;
+                        $datasets['data'][$trans][$condition] += $transaction->total;
+
                         // increase sales by 1
                         $datasets['data']['total'][$condition] += 1;
 
-                        $datasets['data']['total_sale'] += $sale->total;
+                        $datasets['data']['total_'.$trans] += $transaction->total;
                         // sale detail
-                        $details = $sale->details;
+                        $details = $transaction->details;
                         foreach ($details as $detail) {
                             $datasets['data']['product'][$condition] += $detail->quantity;
                         }
                     }
                 }else{
-                    if (date('d-M', strtotime($sale->created_at)) == $condition) {
+                    if (date('d-M', strtotime($transaction->created_at)) == $condition) {
                         // dd(date('d-M', strtotime($sale->created_at)), $condition);
                         // increase sales in same day
-                        $datasets['data']['sales'][$condition] += $sale->total;
+                        $datasets['data'][$trans][$condition] += $transaction->total;
 
                         // increase sales by 1
                         $datasets['data']['total'][$condition] += 1;
 
                         // sale detail
-                        $details = $sale->details;
+                        $details = $transaction->details;
                         foreach ($details as $detail) {
                             $datasets['data']['product'][$condition] += $detail->quantity;
-                            $total_sale = $detail->unit_price * $detail->quantity;
-                            $datasets['data']['total_sale'] += $total_sale;
+                            $total_trans = $detail->unit_price * $detail->quantity;
+                            $datasets['data']['total_'.$trans] += $total_trans;
                         }
                     }
                 }
             }
         }
-        $average = $datasets['data']['total_sale'] / count($labels);
+
+        $average = $datasets['data']['total_'.$trans] / count($labels);
         $datasets['data']['average'] = round($average, 0);
 
         if ($show_report == 'monthly') {
-            $datasets['data']['average_label'] = 'Rata-rata penjualan Bulanan';
+            $datasets['data']['average_label'] = 'Rata-rata Transaksi Bulanan';
         }else{
-            $datasets['data']['average_label'] = 'Rata-rata penjualan Harian';
+            $datasets['data']['average_label'] = 'Rata-rata Transaksi Harian';
         }
 
         if (isset($datasets['data']) && count($datasets['data']) > 0) {
@@ -119,34 +123,58 @@ class ReportController extends Controller
     }
 
 
-    private function getSales($start_date, $end_date)
+    private function getTrans($start_date, $end_date, $trans)
     {
         $start_date = date($start_date);
         $end_date = date($end_date);
 
-        $sales = Sales::whereHas('transaction', function ($query) {
-                $query->where('status', 'paid');
-            })
-            ->whereBetween('created_at', [$start_date, $end_date])
-            ->get();
-        return $sales;
+        if ($trans == 'sales') {
+            $data = Sales::whereHas('transaction', function ($query) {
+                    $query->where('status', 'paid');
+                })
+                ->whereDate('created_at', '>=', $start_date)
+                ->whereDate('created_at', '<=', $end_date)
+                ->get();
+        }else{
+            $data = Purchase::whereHas('transaction', function ($query) {
+                    $query->where('status', 'paid');
+                })
+                ->whereDate('created_at', '>=', $start_date)
+                ->whereDate('created_at', '<=', $end_date)
+                ->get();
+        }
+        return $data;
     }
 
-    private function getProduct($start_date, $end_date, $product)
+    private function getProduct($start_date, $end_date, $product, $trans)
     {
         $start_date = date($start_date);
         $end_date = date($end_date);
 
-        $sales = Sales::whereHas('transaction', function ($query) {
-            return $query->where('status', 'paid');
-        })
-        ->whereHas('details', function ($query) use ($product) {
-            return $query->where('product_id', $product);
-        })
-        ->whereBetween('created_at', [$start_date, $end_date])
-        ->get();
+        if ($trans = 'sales') {
+            $data = Sales::whereHas('transaction', function ($query) {
+                return $query->where('status', 'paid');
+            })
+            ->whereHas('details', function ($query) use ($product) {
+                return $query->where('product_id', $product);
+            })
+            ->whereDate('created_at', '>=', $start_date)
+            ->whereDate('created_at', '<=', $end_date)
+            ->get();
+        }else{
+            $data = Purchase::whereHas('transaction', function ($query) {
+                return $query->where('status', 'paid');
+            })
+            ->whereHas('details', function ($query) use ($product) {
+                return $query->where('product_id', $product);
+            })
+            ->whereDate('created_at', '>=', $start_date)
+            ->whereDate('created_at', '<=', $end_date)
+            ->get();
+        }
 
-        return $sales;
+
+        return $data;
     }
 
     /**
@@ -178,5 +206,20 @@ class ReportController extends Controller
             }
         }
         return $labels;
+    }
+
+    /**
+     * print method.
+     *
+     */
+    public function print(Request $request, $trans = 'sales')
+    {
+        $validator = Validator::make($request->all(), [
+            'start_date' => 'required|date',
+            'end_date' => 'required|date',
+            'report_type' => 'required|in:invoice,product',
+            'show_report' => 'required|in:monthly,daily',
+            'product' => 'sometimes|required_if:report_type,product',
+        ]);
     }
 }

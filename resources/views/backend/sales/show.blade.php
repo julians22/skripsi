@@ -96,7 +96,6 @@
                 <h5 class="mb-4">@lang('Payment Detail')</h5>
 
                 @if ($sales->transaction->hasPayment())
-
                     @php
                         $transaction = $sales->transaction;
                         $payment = $transaction->payment;
@@ -107,15 +106,44 @@
                             <th>@lang('Payment Date')</th>
                             <td>@displayDate($payment->created_at, 'Y/m/d')</td>
                         </tr>
+                        @if (!$transaction->status == 'debt')
+                            <tr>
+                                <th>@lang('Repayment Date')</th>
+                                <td>@displayDate($payment->updated_at, 'Y/m/d')</td>
+                            </tr>
+                        @endif
+                        <tr>
+                            <th>@lang('Total')</th>
+                            <td>{{ rupiah($sales->grand_total) }}</td>
+                        </tr>
                         <tr>
                             <th>@lang('Payment Amount')</th>
                             <td>{{ rupiah($payment->amount) }}</td>
                         </tr>
                         <tr>
                             <th>@lang('Status')</th>
-                            <td>{{ __($transaction->status) }}</td>
+                            <td>
+                                {{ __($transaction->status) }}
+                            </td>
                         </tr>
                     </table>
+                    @if ($transaction->status == 'debt')
+                        <form method="POST" action="{{ route('admin.sales.payment.update', ['sales' => $sales]) }}">
+                            @csrf
+                            <create-payment-component
+                                grand-total="{{ $sales->grand_total }}"
+                                grand-total-label="{{ rupiah($sales->grand_total) }}"
+                                alert-message="@lang('This transation is not fully charged.')"
+                                add-btn-text="@lang('Update Payment')"
+                                save-btn-text="@lang("Save")"
+                                total-label-text="@lang('Total Price')"
+                                full-payment-label="@lang('Full Payment')"
+                                pay-amount-label="@lang('Pay Amount')"
+                                />
+                        </form>
+
+                    @endif
+
                 @else
                     <form method="POST" action="{{ route('admin.sales.payment.store', ['sales' => $sales]) }}">
                         @csrf

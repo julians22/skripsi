@@ -2,10 +2,10 @@
     <div class="row">
         <div class="col-md-12">
             <div class="form-group row">
-                <label for="report_type" class="col-md-3 col-form-label text-md-right">Data Laporan</label>
+                <label for="report_type" class="col-md-3 col-form-label text-md-right">Data Laporan Pembelian</label>
                 <div class="col-md-9">
                     <select name="report_type" id="report_type" class="form-control" v-model="report_type">
-                        <option value="sales">Per Faktur</option>
+                        <option value="invoice">Per Faktur</option>
                         <option value="product">Per Produk</option>
                     </select>
                 </div>
@@ -48,14 +48,14 @@
                 <div class="col-md-3">
                     <div class="card">
                         <div class="card-body">
-                            <h5 class="card-title">Total Penjualan</h5>
-                            <h6 class="card-subtitle mb-2 text-muted">{{ extarctMoney(total_sales) }}</h6>
+                            <h5 class="card-title">Total Transaksi</h5>
+                            <h6 class="card-subtitle mb-2 text-muted">{{ extarctMoney(total_purchase) }}</h6>
                         </div>
                     </div>
-                    <div class="card" v-if="sale_average">
+                    <div class="card" v-if="purchase_average">
                         <div class="card-body">
                             <h5 class="card-title">{{ average_label }} </h5>
-                            <h6 class="card-subtitle mb-2 text-muted">{{ extarctMoney(sale_average) }}</h6>
+                            <h6 class="card-subtitle mb-2 text-muted">{{ extarctMoney(purchase_average) }}</h6>
                         </div>
                     </div>
                     <div class="card">
@@ -66,7 +66,7 @@
                     </div>
                     <div class="card">
                         <div class="card-body">
-                            <h5 class="card-title">Jumlah Produk Terjual</h5>
+                            <h5 class="card-title">Jumlah Produk Dibeli</h5>
                             <h6 class="card-subtitle mb-2 text-muted">{{ total_product }}</h6>
                         </div>
                     </div>
@@ -100,7 +100,7 @@
 </template>
 
 <script>
-import { useReport } from "../../../store";
+import { useReport } from "../../../../store";
 
 import { Bar, Line as LineChartGen } from 'vue-chartjs/legacy'
 import {
@@ -124,9 +124,9 @@ ChartJS.register(
   PointElement
 )
 
-import { rupiah } from "../../../utils/money";
+import { rupiah } from "../../../../utils/money";
 
-import MonthPicker from "../Forms/DatePicker/MonthPickerComponent.vue";
+import MonthPicker from "../../Forms/DatePicker/MonthPickerComponent.vue";
 
 export default {
     props: {
@@ -157,13 +157,13 @@ export default {
     },
     data(){
         return {
-            report_type: 'sales',
+            report_type: 'invoice',
             show_report: 'monthly',
             product: '',
-            total_sales: 0,
+            total_purchase: 0,
             total_transaction: 0,
             total_product: 0,
-            sale_average: 0,
+            purchase_average: 0,
             average_label: '',
             chartIsValid: false,
             isLoading: false,
@@ -172,7 +172,7 @@ export default {
                 labels: [],
                 datasets: [
                     {
-                        label: 'Penjualan',
+                        label: 'Pembelian',
                         data: [],
                         backgroundColor: '#3330E4',
                         borderColor: '#3330E4',
@@ -245,9 +245,6 @@ export default {
         },
         show_report: function(val){
             this.storeReport.show_report = val;
-        },
-        product: function(val){
-            this.storeReport.product = val;
         }
     },
     computed: {
@@ -262,9 +259,17 @@ export default {
             this.clearData();
             this.isLoading = true;
 
+            if (data.report_type == 'product') {
+                if (data.product == '') {
+                    this.message = 'Silahkan pilih barang terlebih dahulu';
+                    this.isLoading = false;
+                    return;
+                }
+            }
+
             let config = {
                 method: 'GET',
-                url: '/ajax/reports/sales',
+                url: '/ajax/reports/purchase',
                 params: data,
                 headers: {
                     'Content-Type': 'application/json'
@@ -285,9 +290,9 @@ export default {
                     this.isLoading = false;
                 })
                 .catch(error => {
-                    console.log(error);
-                    this.message = response.data.message;
+                    this.message = 'Terjadi kesalahan pada server';
                     this.isLoading = false;
+                    console.log(error);
                 });
         },
         collectData(){
@@ -300,18 +305,18 @@ export default {
             }
         },
         passData(data){
-            for (const key in data.sales) {
+            for (const key in data.purchase) {
                 this.chartData.labels.push(key);
 
-                this.chartData.datasets[0].data.push(data.sales[key]);
+                this.chartData.datasets[0].data.push(data.purchase[key]);
                 this.chartData.datasets[1].data.push(data.total[key]);
                 this.chartData.datasets[2].data.push(data.product[key]);
 
-                this.total_sales += data.sales[key];
+                this.total_purchase += data.purchase[key];
                 this.total_transaction += data.total[key];
                 this.total_product += data.product[key];
             }
-            this.sale_average = data.average;
+            this.purchase_average = data.average;
             this.average_label = data.average_label;
         },
         clearData(){
@@ -320,10 +325,10 @@ export default {
             this.chartData.datasets[1].data = [];
             this.chartData.datasets[2].data = [];
             this.chartIsValid = false;
-            this.total_sales = 0;
+            this.total_purchase = 0;
             this.total_transaction = 0;
             this.total_product = 0;
-            this.sale_average = 0;
+            this.purchase_average = 0;
         },
         extarctMoney(val){
             return rupiah(val);
@@ -335,7 +340,7 @@ export default {
 </script>
 
 <style lang="css" scoped>
-    .form-group >>> .input-date {
+    .form-group :deep() .input-date {
         width: 100%;
     }
 </style>

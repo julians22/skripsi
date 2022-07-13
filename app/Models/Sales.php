@@ -93,10 +93,11 @@ class Sales extends Model
     public function getGrandTotalAttribute()
     {
         if ($this->discount > 0) {
-            return $this->total - $this->discount;
+            $total = $this->total - $this->discount;
+            return $total;
         }
 
-        return clear_number($this->total);
+        return $this->total;
     }
 
     /**
@@ -107,6 +108,17 @@ class Sales extends Model
     {
         return $query->whereHas('customer', function ($query) use ($name) {
             $query->orWhere('name', 'like', "%$name%");
+        });
+    }
+
+    /**
+     * Scope a query by transaction status.
+     * @param  \Illuminate\Database\Eloquent\Builder $query
+     */
+    public function scopeTransactionStatus($query, $status): Builder
+    {
+        return $query->whereHas('transaction', function ($query) use ($status) {
+            $query->where('status', $status);
         });
     }
 

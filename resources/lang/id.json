@@ -281,5 +281,16 @@
     "Delete Customer": "Hapus Pelanggan",
     "Delete Supplier": "Hapus Pemasok",
     "Full Payment": "Pembayaran Penuh",
-    "Report": "Laporan"
+    "Report": "Laporan",
+    "Applied Filters": "Filter yang Diterapkan",
+    "Clear" : "Bersihkan",
+    "Search" : "Cari",
+    "Showing": "Menampilkan",
+    "results": "hasil",
+    "Filters": "Filter",
+    "Select Customer": "Pilih Pelanggan",
+    "This transation is not fully charged.": "Transaksi ini belum lunas.",
+    "Payment Amount": "Jumlah Pembayaran",
+    "Payment Date": "Tanggal Pembayaran",
+    "Repayment Date": "Tanggal Pelunasan"
 }

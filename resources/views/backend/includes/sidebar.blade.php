@@ -1,10 +1,10 @@
 <div class="c-sidebar c-sidebar-dark c-sidebar-fixed c-sidebar-lg-show" id="sidebar">
     <div class="c-sidebar-brand d-lg-down-none">
         <div class="c-sidebar-brand-full">
-            <img src="{{ asset('img/brand/logo_white.png') }}" alt="Arpan Electric" style="margin: .5rem;" width="145" height="77">
+            <img src="{{ asset(setting('app_logo', 'img/brand/logo_white.png')) }}" alt="Arpan Electric" style="margin: .5rem;" width="145" height="77">
         </div>
         <div class="c-sidebar-brand-minimized">
-            <img src="{{ asset('img/brand/mini_white.png') }}" alt="" width="45px">
+            <img src="{{ asset(setting('app_logo', 'img/brand/mini_white.png')) }}" alt="" width="45px">
         </div>
     </div><!--c-sidebar-brand-->
 
@@ -252,6 +252,15 @@
                 </ul>
             </li>
         @endif
+
+        <li class="c-sidebar-nav-item">
+            <x-utils.link
+                class="c-sidebar-nav-link"
+                :href="route('admin.settings.index')"
+                :active="activeClass(Route::is('admin.settings*'), 'c-active')"
+                icon="c-sidebar-nav-icon cil-settings"
+                :text="__('Settings')" />
+        </li>
     </ul>
 
     <button class="c-sidebar-minimizer c-class-toggler" type="button" data-target="_parent" data-class="c-sidebar-minimized"></button>

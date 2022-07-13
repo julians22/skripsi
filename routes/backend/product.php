@@ -19,6 +19,11 @@ Route::group(['prefix' => 'product', 'as' => 'product.'], function() {
             $trail->parent('admin.product.index')->push(__('Create New Product'), route('admin.product.create'));
         })
         ->name('create');
+    Route::get('/import', [ProductController::class, 'import'])
+        ->breadcrumbs(function (Trail $trail) {
+            $trail->parent('admin.product.index')->push(__('Import Product'), route('admin.product.import'));
+        })
+        ->name('import');
     Route::post('/', [ProductController::class, 'store'])
         ->name('store');
     Route::group(['prefix' => '{product}'], function() {

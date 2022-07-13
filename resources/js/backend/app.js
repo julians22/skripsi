@@ -43,11 +43,14 @@ Vue.component('full-calendar-component', require('./components/Calendar/FullCale
 Vue.component('create-payment-component', require('./components/Forms/Payments/CreatePayment.vue').default);
 Vue.component('input-number-component', require('./components/Forms/InputNumber.vue').default);
 
-Vue.component('report', require('./components/Reports/Page.vue').default);
+Vue.component('report-sales', require('./components/Reports/Out/Page.vue').default);
+Vue.component('report-purchase', require('./components/Reports/In/Page.vue').default);
+
+Vue.component('code-product', require('./components/Forms/CodeProduct.vue').default);
+
+import {rupiah} from '../utils/money';
 
 const app = new Vue({
     el: '#app',
     pinia
 });
-
-window.vueApp = app;

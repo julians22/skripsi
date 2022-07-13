@@ -77,9 +77,19 @@ class SalesController extends Controller
         $code = 'INV/' . date('Ymd') . '/' . ($lastSale ? $lastSale->id + 1 : 1);
         DB::beginTransaction();
         try {
+            if ($request->selected_customer == 0 || $request->selected_customer == null) {
+                $customer = Customer::create([
+                    'name' => $request->name,
+                    'address' => $request->address,
+                    'phone' => $request->phone,
+                    'email' => $request->email,
+                ]);
+            }else{
+                $customer = Customer::find($request->selected_customer);
+            }
             $sales = Sales::create([
                 'invoice_number' => $code,
-                'customer_id' => $request->selected_customer,
+                'customer_id' => $customer->id,
                 'total' => $request->total,
                 'discount' => $request->discounts['price'],
                 'remarks' => $request->remarks
@@ -100,7 +110,7 @@ class SalesController extends Controller
 
             if ($sales) {
                 $sales->transaction()->create([
-                    'total' => $sales->total,
+                    'total' => $sales->grand_total,
                     'status' => Transaction::STATUS_PENDING,
                     'code' => 'P-' . $sales->invoice_number,
                 ]);
@@ -126,14 +136,23 @@ class SalesController extends Controller
         return view('backend.sales.show', compact('sales'));
     }
 
-    public function print(Sales $sales)
+    public function print(Request $request, Sales $sales)
     {
-        $sales = $sales->with('customer', 'details')->find($sales->id);
+        $print = 'invoice';
+
+        if ($request->has('print')) {
+            $print = $request->print;
+        }
+
+        $sales = $sales->with('customer', 'details', 'transaction')->find($sales->id);
+        // dd($sales);
         // dd($sales);
         // return view('backend.utils.print.saless.out', compact('sales'));
-        $pdf = Pdf::loadView('backend.utils.print.transactions.out', compact('sales'))->setPaper('a4', 'landscape')->setOptions(['dpi' => 90, 'defaultFont' => 'Source Sans Pro', 'isHtml5ParserEnabled' => true,
+        // return view('backend.utils.print.transactions.receipt', compact('sales'));
+        // $pdf = Pdf::loadView('backend.utils.print.transactions.receipt', compact('sales'))->setPaper('58mm', 'potrait')->setOptions(['dpi' => 90, 'defaultFont' => 'Source Sans Pro', 'isHtml5ParserEnabled' => true, 'isRemoteEnabled' => true]);
+        $pdf = Pdf::loadView('backend.utils.print.transactions.out', compact('sales'))->setPaper('a5', 'landscape')->setOptions(['dpi' => 90, 'defaultFont' => 'Source Sans Pro', 'isHtml5ParserEnabled' => true,
         'isRemoteEnabled' => true]);
-        return $pdf->stream('invoice.pdf');
+        return $pdf->stream($print.'.pdf');
     }
 
     public function storePayment(Request $request, Sales $sales)
@@ -153,9 +172,42 @@ class SalesController extends Controller
         ]);
 
         if ($payment) {
-            if ($payment->amount == $transaction->total) {
+            if ((int)$request->payment == (int)$transaction->total) {
                 $transaction->update([
                     'status' => 'paid',
+                ]);
+            }elseif ((int)$request->payment < (int)$transaction->total) {
+                $transaction->update([
+                    'status' => 'debt',
+                ]);
+            }
+        }
+
+        return redirect()->route('admin.sales.show', ['sales' => $sales])->withFlashSuccess(__('Payment transaction successfully created.'));
+    }
+
+    public function updatePayment(Request $request, Sales $sales)
+    {
+        $sales->with('customer', 'details', 'transaction');
+
+
+        $transaction = $sales->transaction;
+
+
+        $request->merge(['payment' => clear_number($request->payment)]);
+
+        $payment = $transaction->payment()->update([
+            'amount' => $request->payment
+        ]);
+
+        if ($payment) {
+            if ((int)$request->payment == (int)$sales->grand_total) {
+                $transaction->update([
+                    'status' => 'paid',
+                ]);
+            }elseif ((int)$request->payment < (int)$sales->grand_total) {
+                $transaction->update([
+                    'status' => 'debt',
                 ]);
             }
         }

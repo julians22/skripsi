@@ -14,7 +14,7 @@
 }
 body{
 	width: 100%;
-    font-size: 14px;
+    font-size: 10px;
     font-weight: 300;
 }
 .head-table, .head-table * {
@@ -22,14 +22,14 @@ body{
 	font-weight: 700;
 }
 .table-transaction {
-    margin-top: 20px;
+    margin-top: 10px;
     border-width: 1px;
     border-color: #eee;
     border-collapse: collapse;
 }
 .table-transaction th, .table-transaction td {
     border-width: 1px;
-    padding: 8px;
+    padding: 4px;
     border-style: solid;
     border-color: #eee;
 }
@@ -47,7 +47,7 @@ table {
 	background-color: #fff;
 }
 .table-transaction tbody .footer-grand {
-	font-size: 14px;
+	font-size: 10px;
 	background-color: black;
     color: white;
 	font-weight: 700;
@@ -56,8 +56,8 @@ table {
 .invoice-badge{
     background-color: #eee;
     color: #000;
-    padding: 5px;
-    border-radius: 5px;
+    padding: 2px;
+    border-radius: 50%;
 }
 </style>
 </head>
@@ -66,10 +66,10 @@ table {
       <tbody>
         <tr>
           <td>
-            <img src="{{ asset('img/brand/logo.jpeg') }}" style="width: 100%; max-width: 180px" />
+            <img src="{{ asset(setting('invoice_logo', 'img/brand/logo.jpeg')) }}" style="width: 100%; max-width: 120px" />
           </td>
           <td width="50%">
-          	<table border="0" cellpadding="5" class="head-information">
+          	<table border="0" cellpadding="2" class="head-information">
               <tbody>
                 <tr>
                   <th align="left">No. Faktur</th>
@@ -99,12 +99,11 @@ table {
     </table>
 
     <table width="100%" class="table-transaction">
-      <tbody>
         <tr class="heading">
-          <th width="51%" scope="col">Item</th>
-          <th width="11%" scope="col">Jml</th>
-          <th width="19%" scope="col">Harga</th>
-          <th width="19%" scope="col" align="center">Total</th>
+            <th width="51%" scope="col">Item</th>
+            <th width="11%" scope="col">Jml</th>
+            <th width="19%" scope="col">Harga</th>
+            <th width="19%" scope="col" align="center">Total</th>
         </tr>
         @foreach ($sales->details as $detail)
             <tr class="item">
@@ -152,19 +151,18 @@ table {
             </td>
         </tr>
         @else
-            <tr>
-                <th>
-                    Pembayaran
-                </th>
-                <th colspan="2" align="right">
-                    -
-                </th>
-                <td align="left">
-                    -
-                </td>
-            </tr>
+        <tr>
+            <th>
+                Pembayaran
+            </th>
+            <th colspan="2" align="right">
+                -
+            </th>
+            <td align="left">
+                -
+            </td>
+        </tr>
         @endif
-      </tbody>
     </table>
 </body>
 </html>

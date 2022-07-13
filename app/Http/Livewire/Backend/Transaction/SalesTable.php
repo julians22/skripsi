@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
 use App\Models\Sales;
+use Rappasoft\LaravelLivewireTables\Views\Filter;
 
 class SalesTable extends DataTableComponent
 {
@@ -31,11 +32,27 @@ class SalesTable extends DataTableComponent
         ];
     }
 
+    public function filters(): array
+    {
+        return [
+            'status' => Filter::make(__("Status"))
+                ->select(
+                    [
+                        'pending' => __('Pending'),
+                        'paid' => __('Paid'),
+                        'canceled' => __('Canceled'),
+                    ]
+                )
+        ];
+
+    }
+
     public function query(): Builder
     {
         $query = Sales::with('customer', 'transaction');
         return $query
-            ->when($this->getFilter('search'), fn ($query) => $query->customerName($this->getFilter('search')));
+            ->when($this->getFilter('search'), fn ($query) => $query->customerName($this->getFilter('search')))
+            ->when($this->getFilter('status'), fn ($query) => $query->transactionStatus($this->getFilter('status')));
     }
 
     /**

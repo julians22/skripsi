@@ -88,6 +88,12 @@ class ProductCategoryController extends Controller
      */
     public function destroy(ProductCategory $productCategory)
     {
-        //
+        $products = $productCategory->products()->get();
+        if ($products->count() > 0) {
+            $products->each(function ($product) {
+                $product->update(['category_id' => 1]);
+            });
+        }
+        $productCategory->delete();
     }
 }

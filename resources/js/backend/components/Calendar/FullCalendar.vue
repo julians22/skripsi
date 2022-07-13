@@ -64,10 +64,25 @@ export default {
             }
         }
     },
-    mounted(){
-        this.calendarOptions.events = this.computedEvent;
+    created(){
+        if(this.sales.length > 0 || this.purchases.length > 0){
+            this.calendarOptions.events = this.computedEvent();
+        }
     },
-    computed: {
+    methods: {
+        handleDateClick: function(arg) {
+        //    alert('date click! ' + arg.dateStr)
+        },
+        makeElement: function(...items) {
+            let listWrapper = document.createElement('ul');
+            items.forEach(item => {
+                let listItem = document.createElement('li');
+                listItem.innerHTML = item;
+                listWrapper.appendChild(listItem);
+            });
+
+            return listWrapper;
+        },
         computedEvent : function(){
             let events = [];
             this.sales.forEach(event => {
@@ -98,21 +113,6 @@ export default {
 
 
             return events;
-        }
-    },
-    methods: {
-        handleDateClick: function(arg) {
-        //    alert('date click! ' + arg.dateStr)
-        },
-        makeElement: function(...items) {
-            let listWrapper = document.createElement('ul');
-            items.forEach(item => {
-                let listItem = document.createElement('li');
-                listItem.innerHTML = item;
-                listWrapper.appendChild(listItem);
-            });
-
-            return listWrapper;
         }
     }
 

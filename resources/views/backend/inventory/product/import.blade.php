@@ -1,6 +1,6 @@
 @extends('backend.layouts.app')
 
-@section('title', __('All Products'))
+@section('title', __('Import Products'))
 
 @section('breadcrumb-links')
     @include(
@@ -11,20 +11,21 @@
 @section('content')
     <x-backend.card>
         <x-slot name="header">
-            @lang('All Products')
+            @lang('Import Products')
         </x-slot>
 
         <x-slot name="headerActions">
-            <x-utils.link icon="c-icon cil-plus" class="card-header-action" :href="route('admin.product.create')"
-                :text="__('Create Product')" />
-            <x-utils.link icon="c-icon cil-arrow-bottom" class="card-header-action" :href="route('admin.product.import')"
-                :text="__('Import Product')" />
+            <x-utils.link
+                class="card-header-action"
+                :href="route('admin.product.index')"
+                :text="__('Cancel')"
+            />
         </x-slot>
 
         @slot('body')
             <div class="row">
                 <div class="col-md-12">
-                    <livewire:backend.inventory.product-table />
+                    <livewire:products.product-import />
                 </div>
             </div>
         @endslot

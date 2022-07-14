@@ -14,7 +14,6 @@
         "php": "^7.4|^8.0",
         "arcanedev/log-viewer": "8.x",
         "barryvdh/laravel-dompdf": "^1.0",
-        "codedge/laravel-selfupdater": "^3.4",
         "darkghosthunter/laraguard": "^3.0",
         "doctrine/dbal": "^3.3",
         "fideloper/proxy": "^4.4",

@@ -18,7 +18,7 @@ class ProductStateController extends Controller
 
         if (!empty($search)) {
             $query->where('name', 'like', '%' . $search . '%');
-            $query->where('code', 'like', '%' . $search . '%');
+            $query->orWhere('code', 'like', '%' . $search . '%');
         }
 
         if (!empty($category_id)) {

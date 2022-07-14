@@ -21,14 +21,14 @@ class DatabaseSeeder extends Seeder
         Model::unguard();
 
         $this->truncateMultiple([
-            // 'activity_log',
-            // 'failed_jobs',
-            'transactions'
+            'activity_log',
+            'failed_jobs',
+            // 'transactions'
         ]);
 
-        // $this->call(AuthSeeder::class);
+        $this->call(AuthSeeder::class);
         // $this->call(AnnouncementSeeder::class);
-        $this->call(TransactionSeeder::class);
+        // $this->call(TransactionSeeder::class);
 
 
 

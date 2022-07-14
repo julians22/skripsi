@@ -145,7 +145,7 @@ class SalesController extends Controller
         }
 
         $sales = $sales->with('customer', 'details', 'transaction')->find($sales->id);
-        $pdf = Pdf::loadView('backend.utils.print.transactions.out', compact('sales'))->setPaper('a4', 'landscape')->setOptions(['dpi' => 90, 'defaultFont' => 'Source Sans Pro', 'isHtml5ParserEnabled' => true,
+        $pdf = Pdf::loadView('backend.utils.print.transactions.out', compact('sales'))->setPaper('a4')->setOptions(['dpi' => 90, 'defaultFont' => 'Source Sans Pro', 'isHtml5ParserEnabled' => true,
         'isRemoteEnabled' => true]);
         return $pdf->stream($print.'.pdf');
     }

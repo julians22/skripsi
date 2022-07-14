@@ -19,15 +19,17 @@
                         <div class="form-group">
                             <label >Select Product</label>
                             <v-select label="name"
-                                v-model="selected_product"
-                                :options="products"
-                                placeholder="Select Product"
-                                @search="onSearch"
-                                @deselected="selected_product = null"
-                                @option:selected="selectedOption"
+                                    v-model="selected_product"
+                                    :options="products"
+                                    :filterable="false"
+                                    placeholder="Select Product"
+                                    @search="onSearch"
+                                    @deselected="selected_product = null"
+                                    @option:selected="selectedOption"
                                 >
-                                <template v-slot:option="product">
-                                    {{product.name}} || {{product.code}}
+                                <template #option="product">
+                                    <h5 class="m-0">{{ product.name }}</h5>
+                                    <em>{{ product.code }}</em>
                                 </template>
                             </v-select>
                         </div>
@@ -236,7 +238,6 @@ export default {
     methods: {
         selectedOption: function (selected){
             this.price = Number(selected.price);
-            this.sele
         },
         addSelectedProduct: function() {
             let data_added_products = this.added_products;
@@ -308,8 +309,11 @@ export default {
                     }
                 })
                 .then(res => {
-                    vm.products = res.data;
+                    const data = res.data;
+                    // if (data.status) {
+                    vm.products = data;
                     loading(false);
+                    // }
                 })
                 .catch(error => {
                     console.log(error);

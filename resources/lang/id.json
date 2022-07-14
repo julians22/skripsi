@@ -292,5 +292,7 @@
     "This transation is not fully charged.": "Transaksi ini belum lunas.",
     "Payment Amount": "Jumlah Pembayaran",
     "Payment Date": "Tanggal Pembayaran",
-    "Repayment Date": "Tanggal Pelunasan"
+    "Repayment Date": "Tanggal Pelunasan",
+    "Run out stock" : "Produk kehabisan stok",
+    "Debt Sales" : "Penjualan terhutang"
 }

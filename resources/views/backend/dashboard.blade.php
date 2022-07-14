@@ -83,6 +83,14 @@
         </x-slot>
     </x-backend.card>
 
+    <div class="row">
+        <div class="col-md-6">
+            @livewire('backend.widgets.down-stock-component')
+        </div>
+        <div class="col-md-6">
+            @livewire('backend.widgets.sales-debt')
+        </div>
+    </div>
     <x-backend.card>
         <x-slot name="body">
             <full-calendar-component
@@ -90,4 +98,5 @@
                 :sales='@json($contents['sale_events'])'/>
         </x-slot>
     </x-backend.card>
+
 @endsection

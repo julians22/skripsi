@@ -36,7 +36,7 @@
             <div class="form-group row">
                 <label for="product_description" class="col-form-label col-md-2">@lang('Product Description')</label>
                 <div class="col-md-10">
-                    <textarea name="product_description" id="product_description" class="form-control" placeholder="@lang('Product Description')"></textarea>
+                    <textarea name="product_description" id="product_description" class="form-control"></textarea>
                 </div>
             </div>
             <div class="form-group row">

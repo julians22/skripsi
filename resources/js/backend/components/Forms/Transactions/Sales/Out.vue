@@ -29,7 +29,8 @@
                                 >
                                 <template #option="product">
                                     <h5 class="m-0">{{ product.name }}</h5>
-                                    <em>{{ product.code }}</em>
+                                    <p class="m-0"><em>{{ product.code }}</em></p>
+                                    <p class="m-0">Stock: {{ product.quantity }}</p>
                                 </template>
                             </v-select>
                         </div>
@@ -43,14 +44,14 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="amount">Amount</label>
+                                <label for="amount">Jumlah</label>
                                 <div class="row">
                                     <div class="col-8">
                                         <input type="number" class="form-control form-control-sm" id="amount" placeholder="Quantity" v-model="amount">
                                         <small class="text-danger" ref="errorAmount"></small>
                                     </div>
                                     <div class="col-2">
-                                        / <span v-text="selected_product.quantity"></span>
+                                        / <span class="text-sm" v-text="selected_product.quantity"></span>
                                     </div>
                                 </div>
                             </div>

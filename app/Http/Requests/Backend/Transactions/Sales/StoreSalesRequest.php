@@ -25,7 +25,7 @@ class StoreSalesRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:191',
-            'email' => 'string|email|max:191',
+            'email' => 'nullable|string|email|max:191',
             'phone' => 'required|string|max:191',
             'address' => 'required|string|max:191',
             'products.*.product_id' => 'required|integer',

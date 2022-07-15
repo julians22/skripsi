@@ -84,10 +84,10 @@
     </x-backend.card>
 
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-4">
             @livewire('backend.widgets.down-stock-component')
         </div>
-        <div class="col-md-6">
+        <div class="col-md-8">
             @livewire('backend.widgets.sales-debt')
         </div>
     </div>

@@ -7,7 +7,7 @@
             @else
                 <h4 class="card-subtitle mb-4">@lang('Run out stock')</h4>
                 <div class="table-responsive">
-                    <table class="table table-sm">
+                    <table class="table table-sm table-widget">
                         <tr>
                             <th>@lang('Name')</th>
                             <th>@lang('Quantity')</th>

@@ -16,7 +16,7 @@ class Product extends Model
 
     protected $guarded = ['id'];
 
-    public $table = 'products_copy';
+    public $table = 'products';
 
     /**
      * Get the options for generating the slug.

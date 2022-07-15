@@ -22,6 +22,9 @@ class ProductCategoryTable extends DataTableComponent
         ];
     }
 
+    public ?int $searchFilterDebounce = 1000;
+    public ?bool $searchFilterLazy = true;
+
     public function query(): Builder
     {
         return ProductCategory::query();

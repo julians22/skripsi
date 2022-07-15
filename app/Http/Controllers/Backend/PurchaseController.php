@@ -11,6 +11,7 @@ use App\Models\Supplier;
 use App\Models\Transaction;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
+use phpDocumentor\Reflection\Types\Null_;
 use Ramsey\Uuid\Uuid;
 
 class PurchaseController extends Controller
@@ -53,7 +54,7 @@ class PurchaseController extends Controller
                 'name' => $request->name,
                 'address' => $request->address,
                 'phone' => $request->phone,
-                'email' => $request->email,
+                'email' => $request->email ?? null,
             ]);
         }else{
             $suplier = Supplier::find($request->suplier);

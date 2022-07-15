@@ -82,7 +82,7 @@ class SalesController extends Controller
                     'name' => $request->name,
                     'address' => $request->address,
                     'phone' => $request->phone,
-                    'email' => $request->email,
+                    'email' => $request->email ?? null,
                 ]);
             }else{
                 $customer = Customer::find($request->selected_customer);

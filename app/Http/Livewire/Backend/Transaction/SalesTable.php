@@ -15,6 +15,8 @@ class SalesTable extends DataTableComponent
 
     public string $defaultSortColumn = 'created_at';
     public string $defaultSortDirection = 'desc';
+    public ?int $searchFilterDebounce = 1000;
+    public ?bool $searchFilterLazy = true;
 
     public function columns(): array
     {

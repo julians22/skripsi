@@ -13,6 +13,9 @@ class CustomerTable extends DataTableComponent
 
     use BaseTableStyle;
 
+    public ?int $searchFilterDebounce = 1000;
+    public ?bool $searchFilterLazy = true;
+
     public function columns(): array
     {
         return [

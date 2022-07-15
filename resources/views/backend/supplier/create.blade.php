@@ -30,7 +30,7 @@
             <div class="form-group row">
                 <label for="email" class="col-form-label col-md-2">Email</label>
                 <div class="col-md-10">
-                    <input type="email" name="email" id="email" class="form-control" placeholder="Email for supplier" required value="{{ old('email') ?? '' }}">
+                    <input type="email" name="email" id="email" class="form-control" placeholder="Email for supplier" value="{{ old('email') ?? '' }}">
                 </div>
             </div>
             <div class="form-group row">

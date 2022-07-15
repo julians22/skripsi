@@ -20,9 +20,14 @@ class ProductTable extends DataTableComponent
      */
     public array $perPageAccepted = [10, 25, 50];
 
+
     public array $bulkActions = [
         'categoryChange' => 'Ubah Kategori',
     ];
+
+    public ?int $searchFilterDebounce = 1000;
+    public ?bool $searchFilterLazy = true;
+
 
     /**
      * Columns property

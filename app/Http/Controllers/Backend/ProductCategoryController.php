@@ -65,7 +65,8 @@ class ProductCategoryController extends Controller
      */
     public function edit(ProductCategory $productCategory)
     {
-        //
+        $category = $productCategory;
+        return view('backend.inventory.category.edit', compact('category'));
     }
 
     /**
@@ -77,7 +78,14 @@ class ProductCategoryController extends Controller
      */
     public function update(Request $request, ProductCategory $productCategory)
     {
-        //
+        $request->validate([
+            'name' => 'required|unique:product_categories,name,'.$productCategory->id,
+            'description' => 'sometimes|nullable',
+        ]);
+
+        $productCategory->update($request->only(['name', 'description']));
+
+        return redirect()->route('admin.category.index')->withFlashSuccess(__('Product category updated successfully.'));
     }
 
     /**
@@ -95,5 +103,7 @@ class ProductCategoryController extends Controller
             });
         }
         $productCategory->delete();
+
+        return redirect()->route('admin.category.index')->withFlashSuccess(__('Product category deleted successfully.'));
     }
 }

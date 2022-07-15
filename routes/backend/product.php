@@ -73,7 +73,7 @@ Route::group(['prefix' => 'category', 'as' => 'category.'], function() {
                 $trail->push($productCategory->name, route('admin.category.edit', $productCategory));
             })
             ->name('edit');
-        Route::patch('/', [ProductCategoryController::class, 'update']);
+        Route::patch('/', [ProductCategoryController::class, 'update'])->name('update');
         Route::delete('/', [ProductCategoryController::class, 'destroy'])->name('destroy');
     });
 });

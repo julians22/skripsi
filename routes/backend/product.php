@@ -26,6 +26,8 @@ Route::group(['prefix' => 'product', 'as' => 'product.'], function() {
         ->name('import');
     Route::post('/', [ProductController::class, 'store'])
         ->name('store');
+    Route::post('price-list', [ProductController::class, 'generatePriceList'])
+        ->name('price-list');
     Route::group(['prefix' => '{product}'], function() {
         Route::get('/', [ProductController::class, 'show'])
             ->breadcrumbs(function (Trail $trail, Product $product) {

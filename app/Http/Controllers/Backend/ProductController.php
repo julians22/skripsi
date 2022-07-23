@@ -11,6 +11,7 @@ use App\Models\ProductCategory;
 use App\Services\ProductServices;
 use DB;
 use Illuminate\Http\Request;
+use PDF;
 
 class ProductController extends Controller
 {
@@ -155,5 +156,45 @@ class ProductController extends Controller
     public function import()
     {
         return view('backend.inventory.product.import');
+    }
+
+    /**
+     * Generate Price List
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function generatePriceList(Request $request)
+    {
+        $request->validate([
+            'paper_size' => 'required',
+        ]);
+
+        $paper_size = $request->paper_size;
+        $products = ProductCategory::with('products')->get();
+        $data = [];
+        foreach ($products as $product) {
+            // sort by product name
+            $product->products = $product->products->sortBy('name');
+            $data[] = [
+                'category' => $product->name,
+                'show' => $product->products->count() > 0,
+                'products' => $product->products->map(function ($product) use ($paper_size) {
+                    return [
+                        'name' => $product->name,
+                        'price' => $product->price,
+                        'code' => $product->code,
+                    ];
+                }),
+            ];
+        }
+
+        $pdf = PDF::loadView('backend.utils.print.products.price-list', compact('data', 'paper_size'))->setPaper($paper_size)->setOptions(['dpi' => 90, 'defaultFont' => 'Source Sans Pro', 'isHtml5ParserEnabled' => true,
+        'isRemoteEnabled' => true]);
+        return $pdf->stream('price-list.pdf');
+
+
+
+
     }
 }

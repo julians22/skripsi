@@ -189,12 +189,11 @@ class ProductController extends Controller
             ];
         }
 
-        $pdf = PDF::loadView('backend.utils.print.products.price-list', compact('data', 'paper_size'))->setPaper($paper_size)->setOptions(['dpi' => 90, 'defaultFont' => 'Source Sans Pro', 'isHtml5ParserEnabled' => true,
+        // return view('backend.utils.print.products.price-list', compact('data', 'paper_size'));
+
+        $pdf = PDF::loadView('backend.utils.print.products.price-list', compact('data', 'paper_size'))->setPaper($paper_size)->setOptions(['dpi' => 100, 'defaultFont' => 'Source Sans Pro', 'isHtml5ParserEnabled' => true,
         'isRemoteEnabled' => true]);
         return $pdf->stream('price-list.pdf');
-
-
-
 
     }
 }

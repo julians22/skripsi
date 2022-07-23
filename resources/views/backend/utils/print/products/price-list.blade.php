@@ -26,6 +26,8 @@
 <style>
 *{
     font-family: 'Source Sans Pro', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 h1, h2, h3, h4, h5, h6, p{
@@ -37,10 +39,6 @@ body{
     font-weight: 300;
     padding: 0;
     margin: 0;
-}
-
-html{
-    padding: 12px;
 }
 
 table{
@@ -77,6 +75,7 @@ table.product-list td{
 }
 
 table.product-list tr.head{
+    border-color: rgb(85, 85, 85);
     background-color: #000;
     color: #fff;
     font-weight:900;
@@ -87,6 +86,23 @@ table.product-list tr.category{
     color: #fff;
     font-weight:900;
 }
+
+table.product-list tr.product-row{
+    page-break-inside: avoid !important;
+}
+
+tr.page-break{
+    page-break-after: always;
+}
+
+tr.page-break td{
+    padding: 0;
+}
+
+.heading{
+    text-decoration: underline;
+}
+
 
 
 </style>
@@ -105,7 +121,7 @@ table.product-list tr.category{
         </tr>
         <tr>
             <td align="center">
-                <h2>DAFTAR HARGA BARANG</h2>
+                <h2 class="heading">DAFTAR HARGA BARANG {{ date('Y-m-d') }}</h2>
             </td>
         </tr>
     </table>
@@ -115,18 +131,54 @@ table.product-list tr.category{
             <td>Kode Barang</td>
             <td>Harga</td>
         </tr>
+        @php
+            $i = 1;
+            $breakOn = 19;
+            $pageOn = 1;
+        @endphp
         @foreach ($data as $product)
             @if ($product['show'])
                 <tr class="category">
                     <td colspan="3" align="center">{{ $product['category'] }}</td>
                 </tr>
                 @foreach ($product['products'] as $product)
-                    <tr>
+                    <tr class="product-row">
                         <td>{{ $product['name'] }}</td>
                         <td>{{ $product['code'] }}</td>
-                        <td>{{ $product['price'] }}</td>
+                        <td>{{ rupiah($product['price']) }}</td>
                     </tr>
+                    @if ($i % $breakOn == 0 && $pageOn == 1)
+                        @php
+                            $pageOn++;
+                            $breakOn = 25;
+                            $i = 0;
+                        @endphp
+                    @endif
+                    @if ($i % $breakOn == 0 && $pageOn > 1)
+                        <tr class="page-break">
+                            <td colspan="3"></td>
+                        </tr>
+                        @php
+                            $pageOn++;
+                            $i = 0;
+                        @endphp
+                    @endif
+                    @php
+                        $i++;
+                    @endphp
                 @endforeach
+                @if ($i % $breakOn == 0 && $pageOn > 1)
+                    <tr class="page-break">
+                        <td colspan="3"></td>
+                    </tr>
+                    @php
+                        $pageOn++;
+                        $i = 0;
+                    @endphp
+                @endif
+                @php
+                    $i++;
+                @endphp
             @endif
         @endforeach
     </table>

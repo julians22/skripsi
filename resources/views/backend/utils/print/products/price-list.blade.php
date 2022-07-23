@@ -32,11 +32,15 @@ h1, h2, h3, h4, h5, h6, p{
     margin: 0;
 }
 
-body, html{
+body{
 	width: 100%;
     font-weight: 300;
     padding: 0;
     margin: 0;
+}
+
+html{
+    padding: 12px;
 }
 
 table{
